@@ -1,8 +1,8 @@
 ﻿namespace RestfulBooker.ApiTests.Constants
 {
-    public static class AuthorizationRequest
+    public static class Authorization
     {
-        public static string Username => "username";
+        public static string Username => "admin";
 
         public static string Password => "password123";
     }
