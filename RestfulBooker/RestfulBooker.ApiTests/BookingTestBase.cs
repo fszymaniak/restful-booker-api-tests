@@ -28,11 +28,8 @@ namespace RestfulBooker.ApiTests
                 AdditionalNeeds = additionalNeeds
             };
 
-            var json = JsonSerializer.Serialize(bookingRequest);
+            var request = PostBookingRequest(bookingRequest);
 
-            var request = new RestRequest(Endpoints.BookingEndpoint, Method.POST);
-            request.AddHeaders();
-            request.AddParameter("application/json", json, ParameterType.RequestBody);
             var response = Client.Execute<BookingResponse>(request);
             var result = JsonSerializer.Deserialize<BookingResponse>(response.Content);
 
@@ -54,6 +51,17 @@ namespace RestfulBooker.ApiTests
             var request = new RestRequest(Endpoints.GetBookingByIdEndpoint, Method.GET);
             request.AddUrlSegment(Endpoints.GetBookingByIdSegment, bookingId);
             request.AddHeaders();
+
+            return request;
+        }
+
+        public static RestRequest PostBookingRequest(BookingModel bookingRequest)
+        {
+            var jsonRequest = JsonSerializer.Serialize(bookingRequest);
+
+            var request = new RestRequest(Endpoints.BookingEndpoint, Method.POST);
+            request.AddHeaders();
+            request.AddParameter("application/json", jsonRequest, ParameterType.RequestBody);
 
             return request;
         }
