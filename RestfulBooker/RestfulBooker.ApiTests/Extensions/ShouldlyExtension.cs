@@ -15,5 +15,16 @@ namespace RestfulBooker.ApiTests.Extensions
                 () => bookingModel.BookinDates.CheckOut.ShouldBe(bookingResponse.Booking.BookinDates.CheckOut),
                 () => bookingModel.AdditionalNeeds.ShouldBe(bookingResponse.Booking.AdditionalNeeds));
         }
+
+        public static void ShouldBeValid(this BookingResponse bookingResponse, BookingModel bookingModel)
+        {
+            bookingResponse.ShouldSatisfyAllConditions(
+                () => bookingResponse.Booking.FirstName.ShouldBe(bookingModel.FirstName),
+                () => bookingResponse.Booking.LastName.ShouldBe(bookingModel.LastName),
+                () => bookingResponse.Booking.DepositPaid.ShouldBe(bookingModel.DepositPaid),
+                () => bookingResponse.Booking.BookinDates.CheckIn.ShouldBe(bookingModel.BookinDates.CheckIn),
+                () => bookingResponse.Booking.BookinDates.CheckOut.ShouldBe(bookingModel.BookinDates.CheckOut),
+                () => bookingResponse.Booking.AdditionalNeeds.ShouldBe(bookingModel.AdditionalNeeds));
+        }
     }
 }
