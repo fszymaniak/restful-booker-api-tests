@@ -1,7 +1,7 @@
 ﻿using System.Net;
+using System.Threading.Tasks;
 using NUnit.Framework;
 using RestfulBooker.ApiTests.Extensions;
-using System.Threading.Tasks;
 using RestfulBooker.ApiTests.Models;
 using RestSharp;
 using Shouldly;
@@ -17,12 +17,13 @@ namespace RestfulBooker.ApiTests.Api
         {
             _client = new RestClient(ApiTestBase.RestfulBokerUrl);
         }
-        
+
         [Test]
         public async Task GetBooking_ReturnsValidBooking_WhenIdExists()
         {
             // given
-            var booking = BookingTestBase.CreateBooking("Phil", "Collins", 1000, true, "2020-08-23", "2020-08-30", "Breakfasts");
+            var booking = BookingTestBase.CreateBooking("Phil", "Collins", 1000, true, "2020-08-23", "2020-08-30",
+                "Breakfasts");
 
             // when
             var results = BookingTestBase.GetBookingById(booking.BookingId);
@@ -35,7 +36,8 @@ namespace RestfulBooker.ApiTests.Api
         public async Task GetBooking_ReturnsOk_WhenIdExists()
         {
             // given
-            var booking = BookingTestBase.CreateBooking("Jarred", "Jack", 2000, false, "2020-09-23", "2020-09-30", "Breakfasts");
+            var booking = BookingTestBase.CreateBooking("Jarred", "Jack", 2000, false, "2020-09-23", "2020-09-30",
+                "Breakfasts");
 
             // when
             var request = BookingTestBase.GetBookingByIdRequest(booking.BookingId);
@@ -52,6 +54,7 @@ namespace RestfulBooker.ApiTests.Api
         {
             // given
             var notExistingBookingId = bookingId;
+
             // when
             var request = BookingTestBase.GetBookingByIdRequest(notExistingBookingId);
             var response = _client.Execute<BookingResponse>(request);
