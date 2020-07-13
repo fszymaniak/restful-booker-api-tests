@@ -8,6 +8,8 @@ namespace RestfulBooker.ApiTests
 {
     public static class BookingTestBase
     {
+        private static readonly RestClient Client = new RestClient(ApiTestBase.RestfulBokerUrl);
+
         public static BookingResponse CreateBooking(string firstName, string lastName, int totalPrice, bool depositPaid, string checkIn, string checkOut, string additionalNeeds)
         {
             var bookingDates = new BookingDates
@@ -28,12 +30,10 @@ namespace RestfulBooker.ApiTests
 
             var json = JsonSerializer.Serialize(bookingRequest);
 
-            var client = new RestClient(ApiTestBase.RestfulBokerUrl);
-
             var request = new RestRequest(Endpoints.BookingEndpoint, Method.POST);
             request.AddHeaders();
             request.AddParameter("application/json", json, ParameterType.RequestBody);
-            var response = client.Execute<BookingResponse>(request);
+            var response = Client.Execute<BookingResponse>(request);
             var result = JsonSerializer.Deserialize<BookingResponse>(response.Content);
 
             return result;
@@ -41,16 +41,21 @@ namespace RestfulBooker.ApiTests
 
         public static BookingModel GetBookingById(int bookingId)
         {
-            var client = new RestClient(ApiTestBase.RestfulBokerUrl);
+            var request = GetBookingByIdRequest(bookingId);
 
+            var response = Client.Execute<BookingResponse>(request);
+            var result = JsonSerializer.Deserialize<BookingModel>(response.Content);
+
+            return result;
+        }
+
+        public static RestRequest GetBookingByIdRequest(int bookingId)
+        {
             var request = new RestRequest(Endpoints.GetBookingByIdEndpoint, Method.GET);
             request.AddUrlSegment(Endpoints.GetBookingByIdSegment, bookingId);
             request.AddHeaders();
 
-            var response = client.Execute<BookingResponse>(request);
-            var result = JsonSerializer.Deserialize<BookingModel>(response.Content);
-
-            return result;
+            return request;
         }
     }
 }
