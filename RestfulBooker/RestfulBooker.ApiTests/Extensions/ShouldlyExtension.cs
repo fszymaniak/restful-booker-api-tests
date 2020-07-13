@@ -5,17 +5,6 @@ namespace RestfulBooker.ApiTests.Extensions
 {
     public static class ShouldlyExtension
     {
-        //public static void ShouldBeValid(this BookingResponse bookingResponse, BookingRequest bookingRequest)
-        //{
-        //    bookingResponse.ShouldSatisfyAllConditions(
-        //        () => bookingResponse.Booking.FirstName.ShouldBe(bookingRequest.Booking.FirstName),
-        //        () => bookingResponse.Booking.LastName.ShouldBe(bookingRequest.Booking.LastName),
-        //        () => bookingResponse.Booking.DepositPaid.ShouldBe(bookingRequest.Booking.DepositPaid),
-        //        () => bookingResponse.Booking.BookinDates.CheckIn.ShouldBe(bookingRequest.Booking.BookinDates.CheckIn),
-        //        () => bookingResponse.Booking.BookinDates.CheckOut.ShouldBe(bookingRequest.Booking.BookinDates.CheckOut),
-        //        () => bookingResponse.Booking.AdditionalNeeds.ShouldBe(bookingRequest.Booking.AdditionalNeeds));
-        //}
-
         public static void ShouldBeValid(this BookingModel bookingModel, BookingResponse bookingResponse)
         {
             bookingModel.ShouldSatisfyAllConditions(
