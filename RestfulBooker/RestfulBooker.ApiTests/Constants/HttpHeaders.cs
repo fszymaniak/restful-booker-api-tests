@@ -13,7 +13,7 @@ namespace RestfulBooker.ApiTests.Constants
 
             public static string Accept => "Accept";
 
-            public static string Token => "Cookie";
+            public static string Cookie => "Cookie";
         }
 
         public static class Value
