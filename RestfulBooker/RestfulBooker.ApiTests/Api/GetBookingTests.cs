@@ -8,7 +8,7 @@ using Shouldly;
 
 namespace RestfulBooker.ApiTests.Api
 {
-    public class GetBookingTests
+    public class GetBookingTests : BookingTestBase
     {
         private RestClient _client;
 
@@ -22,11 +22,11 @@ namespace RestfulBooker.ApiTests.Api
         public async Task GetBooking_ReturnsValidBooking_WhenIdExists()
         {
             // given
-            var booking = BookingTestBase.CreateBooking("Phil", "Collins", 1000, true, "2020-08-23", "2020-08-30",
+            var booking = await CreateBooking("Phil", "Collins", 1000, true, "2020-08-23", "2020-08-30",
                 "Breakfasts");
 
             // when
-            var results = BookingTestBase.GetBookingById(booking.BookingId);
+            var results =  await GetBookingById(booking.BookingId);
 
             // then
             results.ShouldBeValid(booking);
@@ -36,12 +36,12 @@ namespace RestfulBooker.ApiTests.Api
         public async Task GetBooking_ReturnsOk_WhenIdExists()
         {
             // given
-            var booking = BookingTestBase.CreateBooking("Jarred", "Jack", 2000, false, "2020-09-23", "2020-09-30",
+            var booking = await CreateBooking("Jarred", "Jack", 2000, false, "2020-09-23", "2020-09-30",
                 "Breakfasts");
 
             // when
-            var request = BookingTestBase.GetBookingByIdRequest(booking.BookingId);
-            var response = _client.Execute<BookingResponse>(request);
+            var request = GetBookingByIdRequest(booking.BookingId);
+            var response = await _client.ExecuteAsync<BookingResponse>(request);
 
             // then
             response.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -56,8 +56,8 @@ namespace RestfulBooker.ApiTests.Api
             var notExistingBookingId = bookingId;
 
             // when
-            var request = BookingTestBase.GetBookingByIdRequest(notExistingBookingId);
-            var response = _client.Execute<BookingResponse>(request);
+            var request = GetBookingByIdRequest(notExistingBookingId);
+            var response = await _client.ExecuteAsync<BookingResponse>(request);
 
             // then
             response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
