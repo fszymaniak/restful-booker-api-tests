@@ -5,11 +5,12 @@ using RestfulBooker.ApiTests.Models;
 using RestfulBooker.ApiTests.TestData;
 using RestSharp;
 using System.Text.Json;
+using System.Threading.Tasks;
 using Shouldly;
 
 namespace RestfulBooker.ApiTests.Api
 {
-    public class PostBookingTests
+    public class PostBookingTests : BookingTestBase
     {
         private RestClient _client;
 
@@ -20,14 +21,14 @@ namespace RestfulBooker.ApiTests.Api
         }
 
         [Test]
-        public void PostBooking_CreatesValidBooking_WhenValidModelIsSent()
+        public async Task PostBooking_CreatesValidBooking_WhenValidModelIsSent()
         {
             // given
             var bookingRequest = TestBookingModels.ValidBookingModel;
 
             // when
-            var request = BookingTestBase.PostBookingRequest(bookingRequest);
-            var response = _client.Execute<BookingResponse>(request);
+            var request = PostBookingRequest(bookingRequest);
+            var response = await _client.ExecuteAsync<BookingResponse>(request);
             var result = JsonSerializer.Deserialize<BookingResponse>(response.Content);
 
             // then
@@ -36,14 +37,14 @@ namespace RestfulBooker.ApiTests.Api
         }
 
         [Test]
-        public void PostBooking_CreatesValidBooking_WhenValidModeWithoutAdditionalInfoIsSent()
+        public async Task PostBooking_CreatesValidBooking_WhenValidModeWithoutAdditionalInfoIsSent()
         {
             // given
             var bookingRequest = TestBookingModels.BookingModelWithoutAdditionalNeeds;
 
             // when
-            var request = BookingTestBase.PostBookingRequest(bookingRequest);
-            var response = _client.Execute<BookingResponse>(request);
+            var request = PostBookingRequest(bookingRequest);
+            var response = await _client.ExecuteAsync<BookingResponse>(request);
             var result = JsonSerializer.Deserialize<BookingResponse>(response.Content);
 
             // then
@@ -52,7 +53,7 @@ namespace RestfulBooker.ApiTests.Api
         }
 
         [Test]
-        public void PostBooking_CreatesValidBooking_WhenValidModeWithoutTotalPriceIsSent()
+        public async Task PostBooking_CreatesValidBooking_WhenValidModeWithoutTotalPriceIsSent()
         {
             // given
             var bookingRequest = TestBookingModels.BookingModelWithoutTotalPrice;
@@ -60,8 +61,8 @@ namespace RestfulBooker.ApiTests.Api
             finalBookingRequest.TotalPrice = 0;
 
             // when
-            var request = BookingTestBase.PostBookingRequest(bookingRequest);
-            var response = _client.Execute<BookingResponse>(request);
+            var request = PostBookingRequest(bookingRequest);
+            var response = await _client.ExecuteAsync<BookingResponse>(request);
             var result = JsonSerializer.Deserialize<BookingResponse>(response.Content);
 
             // then
@@ -70,7 +71,7 @@ namespace RestfulBooker.ApiTests.Api
         }
 
         [Test]
-        public void PostBooking_CreatesValidBooking_WhenValidModeWithoutDepositPaidIsSent()
+        public async Task PostBooking_CreatesValidBooking_WhenValidModeWithoutDepositPaidIsSent()
         {
             // given
             var bookingRequest = TestBookingModels.BookingModelWithoutTotalPrice;
@@ -78,8 +79,8 @@ namespace RestfulBooker.ApiTests.Api
             finalBookingRequest.DepositPaid = false;
 
             // when
-            var request = BookingTestBase.PostBookingRequest(bookingRequest);
-            var response = _client.Execute<BookingResponse>(request);
+            var request = PostBookingRequest(bookingRequest);
+            var response = await _client.ExecuteAsync<BookingResponse>(request);
             var result = JsonSerializer.Deserialize<BookingResponse>(response.Content);
 
             // then
@@ -88,14 +89,14 @@ namespace RestfulBooker.ApiTests.Api
         }
 
         [Test, TestCaseSource(typeof(TestBookingModels), nameof(TestBookingModels.InvalidBookingModels))]
-        public void PostBooking_Returns500InvalidServerError_WhenInvalidModelIsSent(BookingModel invalidBookingModel)
+        public async Task PostBooking_Returns500InvalidServerError_WhenInvalidModelIsSent(BookingModel invalidBookingModel)
         {
             // given
             var bookingRequest = invalidBookingModel;
 
             // when
-            var request = BookingTestBase.PostBookingRequest(bookingRequest);
-            var response = _client.Execute<BookingResponse>(request);
+            var request = PostBookingRequest(bookingRequest);
+            var response = await _client.ExecuteAsync<BookingResponse>(request);
 
             // then
             response.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
