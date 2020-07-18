@@ -1,16 +1,17 @@
-﻿using Microsoft.AspNetCore.Http.Connections;
+﻿using System.Collections.Generic;
 using RestfulBooker.ApiTests.Constants;
 using RestfulBooker.ApiTests.Models;
 using RestSharp;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace RestfulBooker.ApiTests
 {
-    public static class BookingTestBase
+    public abstract class BookingTestBase
     {
-        private static readonly RestClient Client = new RestClient(ApiTestBase.RestfulBokerUrl);
+        private readonly RestClient _client = new RestClient(ApiTestBase.RestfulBokerUrl);
 
-        public static BookingResponse CreateBooking(string firstName, string lastName, int totalPrice, bool depositPaid, string checkIn, string checkOut, string additionalNeeds)
+        public async Task<BookingResponse> CreateBooking(string firstName, string lastName, int totalPrice, bool depositPaid, string checkIn, string checkOut, string additionalNeeds)
         {
             var bookingDates = new BookingDates
             {
@@ -30,23 +31,33 @@ namespace RestfulBooker.ApiTests
 
             var request = PostBookingRequest(bookingRequest);
 
-            var response = Client.Execute<BookingResponse>(request);
+            var response = await _client.ExecuteAsync<BookingResponse>(request);
             var result = JsonSerializer.Deserialize<BookingResponse>(response.Content);
 
             return result;
         }
 
-        public static BookingModel GetBookingById(int bookingId)
+        public async Task<BookingModel> GetBookingById(int bookingId)
         {
             var request = GetBookingByIdRequest(bookingId);
 
-            var response = Client.Execute<BookingResponse>(request);
+            var response = await _client.ExecuteAsync<BookingResponse>(request);
             var result = JsonSerializer.Deserialize<BookingModel>(response.Content);
 
             return result;
         }
 
-        public static RestRequest GetBookingByIdRequest(int bookingId)
+        public async Task<IEnumerable<BookingResponse>> GetBookingIds()
+        {
+            var request = new RestRequest(Endpoints.BookingEndpoint, Method.GET);
+
+            var response = await _client.ExecuteAsync<BookingResponse>(request);
+            var result = JsonSerializer.Deserialize<IEnumerable<BookingResponse>>(response.Content);
+
+            return result;
+        }
+
+        public RestRequest GetBookingByIdRequest(int bookingId)
         {
             var request = new RestRequest(Endpoints.GetBookingByIdEndpoint, Method.GET);
             request.AddUrlSegment(Endpoints.GetBookingByIdSegment, bookingId);
@@ -55,7 +66,7 @@ namespace RestfulBooker.ApiTests
             return request;
         }
 
-        public static RestRequest PostBookingRequest(BookingModel bookingRequest)
+        public RestRequest PostBookingRequest(BookingModel bookingRequest)
         {
             var jsonRequest = JsonSerializer.Serialize(bookingRequest);
 
