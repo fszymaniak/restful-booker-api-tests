@@ -28,12 +28,14 @@ namespace RestfulBooker.ApiTests.Api
 
             // when
             var request = PostBookingRequest(bookingRequest);
-            var response = await _client.ExecuteAsync<BookingResponse>(request);
-            var result = JsonSerializer.Deserialize<BookingResponse>(response.Content);
+            var postResponse = await _client.ExecuteAsync<BookingResponse>(request);
+            var result = JsonSerializer.Deserialize<BookingResponse>(postResponse.Content);
+
+            var getResult = await GetBookingById(result.BookingId);
 
             // then
-            response.StatusCode.ShouldBe(HttpStatusCode.OK);
-            result.ShouldBeValid(bookingRequest);
+            postResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
+            getResult.ShouldBeValid(bookingRequest);
 
             // clearing up
             await DeleteBookingById(result.BookingId);
@@ -47,12 +49,14 @@ namespace RestfulBooker.ApiTests.Api
 
             // when
             var request = PostBookingRequest(bookingRequest);
-            var response = await _client.ExecuteAsync<BookingResponse>(request);
-            var result = JsonSerializer.Deserialize<BookingResponse>(response.Content);
+            var postResponse = await _client.ExecuteAsync<BookingResponse>(request);
+            var result = JsonSerializer.Deserialize<BookingResponse>(postResponse.Content);
+
+            var getResult = await GetBookingById(result.BookingId);
 
             // then
-            response.StatusCode.ShouldBe(HttpStatusCode.OK);
-            result.ShouldBeValid(bookingRequest);
+            postResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
+            getResult.ShouldBeValid(bookingRequest);
 
             // clearing up
             await DeleteBookingById(result.BookingId);
@@ -68,12 +72,14 @@ namespace RestfulBooker.ApiTests.Api
 
             // when
             var request = PostBookingRequest(bookingRequest);
-            var response = await _client.ExecuteAsync<BookingResponse>(request);
-            var result = JsonSerializer.Deserialize<BookingResponse>(response.Content);
+            var postResponse = await _client.ExecuteAsync<BookingResponse>(request);
+            var result = JsonSerializer.Deserialize<BookingResponse>(postResponse.Content);
+
+            var getResult = await GetBookingById(result.BookingId);
 
             // then
-            response.StatusCode.ShouldBe(HttpStatusCode.OK);
-            result.ShouldBeValid(finalBookingRequest);
+            postResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
+            getResult.ShouldBeValid(bookingRequest);
 
             // clearing up
             await DeleteBookingById(result.BookingId);
@@ -89,12 +95,14 @@ namespace RestfulBooker.ApiTests.Api
 
             // when
             var request = PostBookingRequest(bookingRequest);
-            var response = await _client.ExecuteAsync<BookingResponse>(request);
-            var result = JsonSerializer.Deserialize<BookingResponse>(response.Content);
+            var postResponse = await _client.ExecuteAsync<BookingResponse>(request);
+            var result = JsonSerializer.Deserialize<BookingResponse>(postResponse.Content);
+
+            var getResult = await GetBookingById(result.BookingId);
 
             // then
-            response.StatusCode.ShouldBe(HttpStatusCode.OK);
-            result.ShouldBeValid(finalBookingRequest);
+            postResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
+            getResult.ShouldBeValid(bookingRequest);
 
             // clearing up
             await DeleteBookingById(result.BookingId);
