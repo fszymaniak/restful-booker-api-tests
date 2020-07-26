@@ -30,6 +30,10 @@ namespace RestfulBooker.ApiTests.Api
 
             // then
             results.ShouldBeValid(booking);
+
+            // clearing up
+            await DeleteBookingById(booking.BookingId);
+
         }
 
         [Test]
@@ -40,11 +44,14 @@ namespace RestfulBooker.ApiTests.Api
                 "Breakfasts");
 
             // when
-            var request = GetBookingByIdRequest(booking.BookingId);
+            var request = BookingByIdRequest(booking.BookingId, Method.GET);
             var response = await _client.ExecuteAsync<BookingResponse>(request);
 
             // then
             response.StatusCode.ShouldBe(HttpStatusCode.OK);
+
+            // clearing up
+            await DeleteBookingById(booking.BookingId);
         }
 
         [TestCase(0)]
@@ -56,7 +63,7 @@ namespace RestfulBooker.ApiTests.Api
             var notExistingBookingId = bookingId;
 
             // when
-            var request = GetBookingByIdRequest(notExistingBookingId);
+            var request = BookingByIdRequest(notExistingBookingId, Method.GET);
             var response = await _client.ExecuteAsync<BookingResponse>(request);
 
             // then

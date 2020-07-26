@@ -34,6 +34,9 @@ namespace RestfulBooker.ApiTests.Api
             // then
             response.StatusCode.ShouldBe(HttpStatusCode.OK);
             result.ShouldBeValid(bookingRequest);
+
+            // clearing up
+            await DeleteBookingById(result.BookingId);
         }
 
         [Test]
@@ -50,6 +53,9 @@ namespace RestfulBooker.ApiTests.Api
             // then
             response.StatusCode.ShouldBe(HttpStatusCode.OK);
             result.ShouldBeValid(bookingRequest);
+
+            // clearing up
+            await DeleteBookingById(result.BookingId);
         }
 
         [Test]
@@ -68,6 +74,9 @@ namespace RestfulBooker.ApiTests.Api
             // then
             response.StatusCode.ShouldBe(HttpStatusCode.OK);
             result.ShouldBeValid(finalBookingRequest);
+
+            // clearing up
+            await DeleteBookingById(result.BookingId);
         }
 
         [Test]
@@ -86,6 +95,9 @@ namespace RestfulBooker.ApiTests.Api
             // then
             response.StatusCode.ShouldBe(HttpStatusCode.OK);
             result.ShouldBeValid(finalBookingRequest);
+
+            // clearing up
+            await DeleteBookingById(result.BookingId);
         }
 
         [Test, TestCaseSource(typeof(TestBookingModels), nameof(TestBookingModels.InvalidBookingModels))]
