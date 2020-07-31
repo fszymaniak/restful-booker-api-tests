@@ -48,6 +48,16 @@ namespace RestfulBooker.ApiTests
             return result;
         }
 
+        public async Task<BookingModel> UpdateBookingById(BookingModel bookingRequest, int bookingId, Method method)
+        {
+            var request = UpdateBookingByIdRequest(bookingRequest, bookingId, method);
+
+            var response = await _client.ExecuteAsync<BookingResponse>(request);
+            var result = JsonSerializer.Deserialize<BookingModel>(response.Content);
+
+            return result;
+        }
+
         public async Task DeleteBookingById(int bookingId)
         {
             var request = BookingByIdRequest(bookingId, Method.DELETE);
@@ -105,13 +115,26 @@ namespace RestfulBooker.ApiTests
             return request;
         }
 
+        public RestRequest UpdateBookingByIdRequest(BookingModel bookingRequest, int bookingId, Method method)
+        {
+            var jsonRequest = JsonSerializer.Serialize(bookingRequest);
+
+            var request = new RestRequest(Endpoints.GetBookingByIdEndpoint, method);
+            request.AddUrlSegment(Endpoints.GetBookingByIdSegment, bookingId);
+            request.AddHeaders();
+            request.AddAuthorizationHeader();
+            request.AddParameter(HttpHeaders.Value.ApplicationJson, jsonRequest, ParameterType.RequestBody);
+
+            return request;
+        }
+
         public RestRequest PostBookingRequest(BookingModel bookingRequest)
         {
             var jsonRequest = JsonSerializer.Serialize(bookingRequest);
 
             var request = new RestRequest(Endpoints.BookingEndpoint, Method.POST);
             request.AddHeaders();
-            request.AddParameter("application/json", jsonRequest, ParameterType.RequestBody);
+            request.AddParameter(HttpHeaders.Value.ApplicationJson, jsonRequest, ParameterType.RequestBody);
 
             return request;
         }
