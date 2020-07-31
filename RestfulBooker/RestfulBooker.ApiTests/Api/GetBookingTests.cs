@@ -10,14 +10,6 @@ namespace RestfulBooker.ApiTests.Api
 {
     public class GetBookingTests : BookingTestBase
     {
-        private RestClient _client;
-
-        [OneTimeSetUp]
-        public void Init()
-        {
-            _client = new RestClient(ApiTestBase.RestfulBokerUrl);
-        }
-
         [Test]
         public async Task GetBooking_ReturnsValidBooking_WhenIdExists()
         {
