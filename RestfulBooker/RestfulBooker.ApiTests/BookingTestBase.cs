@@ -10,7 +10,7 @@ namespace RestfulBooker.ApiTests
 {
     public abstract class BookingTestBase
     {
-        private readonly RestClient _client = new RestClient(ApiTestBase.RestfulBokerUrl);
+        protected readonly RestClient _client = new RestClient(ApiTestBase.RestfulBokerUrl);
 
         public async Task<BookingResponse> CreateBooking(string firstName, string lastName, int totalPrice, bool depositPaid, string checkIn, string checkOut, string additionalNeeds)
         {
@@ -85,6 +85,16 @@ namespace RestfulBooker.ApiTests
             return result;
         }
 
+        public async Task<IEnumerable<BookingIdsResponse>> GetBookingIdsByQueryParameter(string parameterName, string parameterValue)
+        {
+            var request = GetBookingByQueryParameterRequest(parameterName, parameterValue);
+
+            var response = await _client.ExecuteAsync<BookingIdsResponse>(request);
+            var result = JsonSerializer.Deserialize<IEnumerable<BookingIdsResponse>>(response.Content);
+
+            return result;
+        }
+
         public RestRequest BookingByIdRequest(int bookingId, Method method)
         {
             var request = new RestRequest(Endpoints.GetBookingByIdEndpoint, method);
@@ -121,6 +131,15 @@ namespace RestfulBooker.ApiTests
             var request = new RestRequest(Endpoints.BookingEndpoint, Method.GET);
             request.AddQueryParameter(Endpoints.GetBookingByCheckinSegment, checkin);
             request.AddQueryParameter(Endpoints.GetBookingByCheckoutSegment, checkout);
+            request.AddHeaders();
+
+            return request;
+        }
+
+        public RestRequest GetBookingByQueryParameterRequest(string urlSegment, string query)
+        {
+            var request = new RestRequest(Endpoints.BookingEndpoint, Method.GET);
+            request.AddQueryParameter(urlSegment, query);
             request.AddHeaders();
 
             return request;
