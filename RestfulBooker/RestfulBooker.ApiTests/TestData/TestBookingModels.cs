@@ -19,6 +19,20 @@ namespace RestfulBooker.ApiTests.TestData
             AdditionalNeeds = "Dinner"
         };
 
+        public static BookingModel ValidBookingModelWithChangedAllFieldsExceptNames = new BookingModel()
+        {
+            FirstName = "John",
+            LastName = "Wick",
+            TotalPrice = 3000,
+            DepositPaid = true,
+            BookinDates = new BookingDates()
+            {
+                CheckIn = DateTime.Now.AddDays(10).ToString("yyyy/MM/dd"),
+                CheckOut = DateTime.Now.AddDays(17).ToString("yyyy/MM/dd")
+            },
+            AdditionalNeeds = "Supper"
+        };
+
         public static BookingModel BookingModelWithoutFirstName = new BookingModel()
         {
             LastName = "Smith",
