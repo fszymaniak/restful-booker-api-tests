@@ -1,4 +1,6 @@
-﻿using RestfulBooker.ApiTests.Models;
+﻿using System.Collections.Generic;
+using System.Linq;
+using RestfulBooker.ApiTests.Models;
 using Shouldly;
 
 namespace RestfulBooker.ApiTests.Extensions
@@ -25,6 +27,17 @@ namespace RestfulBooker.ApiTests.Extensions
                 () => bookingResponse.Booking.BookinDates.CheckIn.ShouldBe(bookingModel.BookinDates.CheckIn),
                 () => bookingResponse.Booking.BookinDates.CheckOut.ShouldBe(bookingModel.BookinDates.CheckOut),
                 () => bookingResponse.Booking.AdditionalNeeds.ShouldBe(bookingModel.AdditionalNeeds));
+        }
+
+        public static void ShouldBeValid(this BookingModel actualBookingModel, BookingModel expectedBookingResponse)
+        {
+            actualBookingModel.ShouldSatisfyAllConditions(
+                () => actualBookingModel.FirstName.ShouldBe(expectedBookingResponse.FirstName),
+                () => actualBookingModel.LastName.ShouldBe(expectedBookingResponse.LastName),
+                () => actualBookingModel.DepositPaid.ShouldBe(expectedBookingResponse.DepositPaid),
+                () => actualBookingModel.BookinDates.CheckIn.ShouldBe(expectedBookingResponse.BookinDates.CheckIn),
+                () => actualBookingModel.BookinDates.CheckOut.ShouldBe(expectedBookingResponse.BookinDates.CheckOut),
+                () => actualBookingModel.AdditionalNeeds.ShouldBe(expectedBookingResponse.AdditionalNeeds));
         }
     }
 }
