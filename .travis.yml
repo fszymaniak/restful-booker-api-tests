@@ -11,10 +11,10 @@ branches:
 
 install:
 - dotnet restore RestfulBooker.sln
-- nuget install NUnit.Console -Version 3.10.0 -OutputDirectory testrunner
+- nuget install NUnit.Console -Version 3.9.0 -OutputDirectory testrunner
 
 script:
- - msbuild /p:Configuration=Release RestfulBooker.sln
- - mono ./testrunner/NUnit.ConsoleRunner.3.10.0/tools/nunit3-console.exe RestfulBooker.ApiTests/bin/Release/netcoreapp3.1/RestfulBooker.ApiTests.dll
+ - msbuild /p:Configuration=Debug RestfulBooker.sln
+ - mono ./testrunner/NUnit.ConsoleRunner.3.9.0/tools/nunit3-console.exe RestfulBooker.ApiTests/bin/Release/netcoreapp3.1/RestfulBooker.ApiTests.dll
  - dotnet build RestfulBooker.ApiTests/RestfulBooker.ApiTests.csproj
  - dotnet test RestfulBooker.ApiTests/RestfulBooker.ApiTests.csproj
