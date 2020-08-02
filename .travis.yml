@@ -9,7 +9,7 @@ branches:
   - develop
 
 install:
-- dotnet restore -p:RestoreUseSkipNonexistentTargets=false RestfulBooker/RestfulBooker.ApiTests.csproj
+- dotnet restore
 - nuget install NUnit.Console -Version 3.12.0 -OutputDirectory testrunner
 
 script:
