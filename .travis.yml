@@ -1,7 +1,7 @@
 ﻿language: csharp
 mono: none
 dist: xenial
-dotnet: 3.1.100
+dotnet: 3.1
 
 branches:
   only:
@@ -9,9 +9,9 @@ branches:
   - develop
 
 install:
-- dotnet restore RestfuBooker/RestfulBooker.ApiTests/RestfulBooker.ApiTests.csproj
+- dotnet restore
 - nuget install NUnit.Console -Version 3.12.0 -OutputDirectory testrunner
 
 script:
- - dotnet build RestfuBooker/RestfulBooker.ApiTests/RestfulBooker.ApiTests.csproj
- - dotnet test RestfuBooker/RestfulBooker.ApiTests/RestfulBooker.ApiTests.csproj
+ - dotnet build RestfulBooker.ApiTests/RestfulBooker.ApiTests.csproj
+ - dotnet test RestfulBooker.ApiTests/RestfulBooker.ApiTests.csproj
