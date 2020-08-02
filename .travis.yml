@@ -15,6 +15,13 @@ install:
 
 script:
  - msbuild /p:Configuration=Release RestfulBooker.sln
- - mono ./testrunner/NUnit.ConsoleRunner.3.12.0/tools/nunit3-console.exe ./RestfulBooker.ApiTests/bin/Release/netcoreapp3.1/RestfulBooker.ApiTests.dll
+ - mono ./testrunner/NUnit.ConsoleRunner.3.12.0/tools/nunit3-console.exe RestfulBooker.ApiTests/bin/Release/netcoreapp3.1/RestfulBooker.ApiTests.dll
  - dotnet build RestfulBooker.ApiTests/RestfulBooker.ApiTests.csproj
  - dotnet test RestfulBooker.ApiTests/RestfulBooker.ApiTests.csproj
+
+ before_install:
+  - sudo apt-get install nunit-console
+ before_script:
+  - nuget restore RestfulBooker.sln
+ after_script:
+  - nunit-console RestfulBooker.ApiTests/bin/Release/netcoreapp3.1/RestfulBooker.ApiTests.dll
