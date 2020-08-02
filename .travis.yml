@@ -9,9 +9,9 @@ branches:
   - develop
 
 install:
-- dotnet restore RestfulBooker/RestfulBooker.ApiTests.csproj
+- dotnet restore RestfulBooker.ApiTests/RestfulBooker.ApiTests.csproj
 - nuget install NUnit.Console -Version 3.12.0 -OutputDirectory testrunner
 
 script:
- - dotnet build RestfulBooker/RestfulBooker.ApiTests.csproj
- - dotnet test RestfulBooker/RestfulBooker.ApiTests.csproj
+ - dotnet build RestfulBooker.ApiTests/RestfulBooker.ApiTests.csproj
+ - dotnet test RestfulBooker.ApiTests/RestfulBooker.ApiTests.csproj
