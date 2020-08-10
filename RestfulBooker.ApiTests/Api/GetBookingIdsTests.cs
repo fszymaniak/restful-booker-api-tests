@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
-using RestfulBooker.ApiTests.Models.Responses;
 using Shouldly;
 
 namespace RestfulBooker.ApiTests.Api
@@ -78,8 +76,48 @@ namespace RestfulBooker.ApiTests.Api
             await DeleteBookingById(createdBooking.BookingId);
         }
 
+        [Test]
+        public async Task GetBookingIds_ReturnOk_ForValidRequestWithCheckinAndCheckOut()
+        {
+            // given
+            var createdBooking = await CreateBooking("Dirk", "Nowitzki", 1000, true, "2020-08-23", "2020-08-30",
+                "Breakfasts");
+
+            // when 
+            var results = await GetBookingIdsByCheckinAndCheckout(createdBooking.Booking.BookinDates.CheckIn, createdBooking.Booking.BookinDates.CheckOut);
+
+            // then
+            results.Count().ShouldBe(_expectedNumberOfFilteredBooking);
+            results.First().BookingId.ShouldBe(createdBooking.BookingId);
+
+            // clearing up
+            await DeleteBookingById(createdBooking.BookingId);
+        }
+
+        [Test]
+        public async Task GetBookingIds_ReturnsEmptyResponse_ForValidRequestWithCheckinAndCheckOut()
+        {
+            // given
+            var createdBooking = await CreateBooking("Dirk", "Nowitzki", 1000, true, "2020-08-23", "2020-08-30",
+                "Breakfasts");
+
+            var notExistingCheckin = "notExistingCheckin";
+            var notExistingCheckout = "notExistingCheckout";
+
+            // when 
+            var results = await GetBookingIdsByCheckinAndCheckout(notExistingCheckin, notExistingCheckout);
+
+            // then
+            results.Count().ShouldBe(_expectedNumberOfNotExistingBooking);
+
+            // clearing up
+            await DeleteBookingById(createdBooking.BookingId);
+        }
+
         [TestCase("firstname", "Darell")]
         [TestCase("lastname", "Addams")]
+        [TestCase("checkin", "2019-09-23")]
+        [TestCase("checkout", "2019-09-30")]
         public async Task GetBookingIds_ReturnOk_ForValidRequestWithOneQueryParameter(string parameterName, string parameterValue)
         {
             // given
@@ -99,6 +137,8 @@ namespace RestfulBooker.ApiTests.Api
 
         [TestCase("firstname", "notExistingFirstName")]
         [TestCase("lastname", "notExistingName")]
+        [TestCase("checkin", "notExistingCheckin")]
+        [TestCase("checkout", "notExistingCheckout")]
         public async Task GetBookingIds_ReturnsEmptyResponse_ForRequestWithNoExistingQueryParameter(string parameterName, string parameterValue)
         {
             // given
