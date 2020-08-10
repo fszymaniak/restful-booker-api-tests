@@ -12,8 +12,6 @@ namespace RestfulBooker.ApiTests.Api
 {
     public class UpdateBookingTests : BookingTestBase
     {
-       
-
         [Test]
         public async Task PutBooking_UpdateAllFieldsOfBooking_WhenValidModelIsSent()
         {
@@ -108,7 +106,7 @@ namespace RestfulBooker.ApiTests.Api
         }
 
         [Test]
-        public async Task PutBooking_Returns405MethodNotAllowed_WhenBookingIsCreated()
+        public async Task PutBooking_Returns405MethodNotAllowed_WhenTryToCreateBooking()
         {
             // given
             var bookingRequest = TestBookingModels.ValidBookingModel;
