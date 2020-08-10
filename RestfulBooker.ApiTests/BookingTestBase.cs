@@ -38,6 +38,16 @@ namespace RestfulBooker.ApiTests
             return result;
         }
 
+        public async Task<BookingResponse> CreateBookingUsingModel(BookingModel bookingModel)
+        {
+            var request = PostBookingRequest(bookingModel);
+
+            var response = await _client.ExecuteAsync<BookingResponse>(request);
+            var result = JsonSerializer.Deserialize<BookingResponse>(response.Content);
+
+            return result;
+        }
+
         public async Task<BookingModel> GetBookingById(int bookingId)
         {
             var request = BookingByIdRequest(bookingId, Method.GET);
