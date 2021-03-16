@@ -8,6 +8,8 @@ using Shouldly;
 
 namespace RestfulBooker.ApiTests.Api
 {
+    [Parallelizable(ParallelScope.Fixtures)]
+    [TestFixture]
     public class GetBookingTests : BookingTestBase
     {
         [Test]
