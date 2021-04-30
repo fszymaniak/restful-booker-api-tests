@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using RestfulBooker.ApiTests.Models;
 using Shouldly;
 
@@ -7,14 +8,38 @@ namespace RestfulBooker.ApiTests.Extensions
 {
     public static class ShouldlyExtension
     {
+        public static bool ShouldBeValid(this IEnumerable<BookingModel> bookingModel, IEnumerable<BookingModel> bookingResponse)
+        {
+            var bModel = bookingModel.ToList();
+            var bResponse = bookingResponse.ToList();
+
+            return bModel.Count == bResponse.Count 
+                && bModel.All(bM => bResponse.Any(bR => ModelAndResponseShouldBeValid(bM, bR)));
+        }
+
+        public static bool ModelAndResponseShouldBeValid(BookingModel bM, BookingModel bR)
+        {
+            return bR.FirstName == bM.FirstName
+            && bR.LastName == bM.LastName
+            && bR.DepositPaid == bM.DepositPaid
+            && bR.BookingDates.CheckIn == bM.BookingDates.CheckIn
+            && bR.BookingDates.CheckOut == bM.BookingDates.CheckOut
+            && bR.AdditionalNeeds == bM.AdditionalNeeds;
+        }
+
+        public static bool ShouldHaveValidStatusCode(this IEnumerable<BookingResponse> bookingResponses, HttpStatusCode statusCode)
+        {
+            bookingResponses.Select(bR => bR.)
+        }
+
         public static void ShouldBeValid(this BookingModel bookingModel, BookingResponse bookingResponse)
         {
             bookingModel.ShouldSatisfyAllConditions(
                 () => bookingModel.FirstName.ShouldBe(bookingResponse.Booking.FirstName),
                 () => bookingModel.LastName.ShouldBe(bookingResponse.Booking.LastName),
                 () => bookingModel.DepositPaid.ShouldBe(bookingResponse.Booking.DepositPaid),
-                () => bookingModel.BookinDates.CheckIn.ShouldBe(bookingResponse.Booking.BookinDates.CheckIn),
-                () => bookingModel.BookinDates.CheckOut.ShouldBe(bookingResponse.Booking.BookinDates.CheckOut),
+                () => bookingModel.BookingDates.CheckIn.ShouldBe(bookingResponse.Booking.BookingDates.CheckIn),
+                () => bookingModel.BookingDates.CheckOut.ShouldBe(bookingResponse.Booking.BookingDates.CheckOut),
                 () => bookingModel.AdditionalNeeds.ShouldBe(bookingResponse.Booking.AdditionalNeeds));
         }
 
@@ -24,8 +49,8 @@ namespace RestfulBooker.ApiTests.Extensions
                 () => bookingResponse.Booking.FirstName.ShouldBe(bookingModel.FirstName),
                 () => bookingResponse.Booking.LastName.ShouldBe(bookingModel.LastName),
                 () => bookingResponse.Booking.DepositPaid.ShouldBe(bookingModel.DepositPaid),
-                () => bookingResponse.Booking.BookinDates.CheckIn.ShouldBe(bookingModel.BookinDates.CheckIn),
-                () => bookingResponse.Booking.BookinDates.CheckOut.ShouldBe(bookingModel.BookinDates.CheckOut),
+                () => bookingResponse.Booking.BookingDates.CheckIn.ShouldBe(bookingModel.BookingDates.CheckIn),
+                () => bookingResponse.Booking.BookingDates.CheckOut.ShouldBe(bookingModel.BookingDates.CheckOut),
                 () => bookingResponse.Booking.AdditionalNeeds.ShouldBe(bookingModel.AdditionalNeeds));
         }
 
@@ -35,8 +60,8 @@ namespace RestfulBooker.ApiTests.Extensions
                 () => actualBookingModel.FirstName.ShouldBe(expectedBookingResponse.FirstName),
                 () => actualBookingModel.LastName.ShouldBe(expectedBookingResponse.LastName),
                 () => actualBookingModel.DepositPaid.ShouldBe(expectedBookingResponse.DepositPaid),
-                () => actualBookingModel.BookinDates.CheckIn.ShouldBe(expectedBookingResponse.BookinDates.CheckIn),
-                () => actualBookingModel.BookinDates.CheckOut.ShouldBe(expectedBookingResponse.BookinDates.CheckOut),
+                () => actualBookingModel.BookingDates.CheckIn.ShouldBe(expectedBookingResponse.BookingDates.CheckIn),
+                () => actualBookingModel.BookingDates.CheckOut.ShouldBe(expectedBookingResponse.BookingDates.CheckOut),
                 () => actualBookingModel.AdditionalNeeds.ShouldBe(expectedBookingResponse.AdditionalNeeds));
         }
     }

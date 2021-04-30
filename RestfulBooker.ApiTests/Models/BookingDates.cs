@@ -1,4 +1,6 @@
-﻿using System.Text.Json.Serialization;
+﻿using System;
+using System.Text.Json.Serialization;
+using RestSharp;
 
 namespace RestfulBooker.ApiTests.Models
 {
@@ -9,5 +11,6 @@ namespace RestfulBooker.ApiTests.Models
 
         [JsonPropertyName("checkout")]
         public string CheckOut { get; set; }
+
     }
 }

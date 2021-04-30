@@ -17,7 +17,7 @@ namespace RestfulBooker.ApiTests.Models
         public bool DepositPaid { get; set; }
 
         [JsonPropertyName("bookingdates")]
-        public BookingDates BookinDates { get; set; }
+        public BookingDates BookingDates { get; set; }
 
         [JsonPropertyName("additionalneeds")]
         public string AdditionalNeeds { get; set; }

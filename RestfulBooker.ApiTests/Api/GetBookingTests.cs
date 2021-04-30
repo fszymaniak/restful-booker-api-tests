@@ -1,6 +1,8 @@
-﻿using System.Net;
+﻿using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using RestfulBooker.ApiTests.Constants;
 using RestfulBooker.ApiTests.Extensions;
 using RestfulBooker.ApiTests.Models;
 using RestSharp;
@@ -12,6 +14,9 @@ namespace RestfulBooker.ApiTests.Api
     [TestFixture]
     public class GetBookingTests : BookingTestBase
     {
+        private static IDictionary<string, Method> _endpointWithMethod = new Dictionary<string, Method>() { { Endpoints.GetBookingByIdEndpoint, Method.GET } };
+        private RestRequest _request = RestRequestExtension.Create(_endpointWithMethod);
+
         [Test]
         public async Task GetBooking_ReturnsValidBooking_WhenIdExists()
         {
@@ -26,7 +31,7 @@ namespace RestfulBooker.ApiTests.Api
             results.ShouldBeValid(booking);
 
             // clearing up
-            await DeleteBookingById(booking.BookingId);
+            //await DeleteBookingsByIds(booking.BookingId);
 
         }
 
@@ -38,14 +43,14 @@ namespace RestfulBooker.ApiTests.Api
                 "Breakfasts");
 
             // when
-            var request = BookingByIdRequest(booking.BookingId, Method.GET);
-            var response = await _client.ExecuteAsync<BookingResponse>(request);
+            _request.BookingByIdRequest(booking.BookingId, Method.GET);
+            var response = await _client.ExecuteAsync<BookingResponse>(_request);
 
             // then
             response.StatusCode.ShouldBe(HttpStatusCode.OK);
 
             // clearing up
-            await DeleteBookingById(booking.BookingId);
+            //await DeleteBookingsByIds(booking.BookingId);
         }
 
         [TestCase(0)]
@@ -57,8 +62,8 @@ namespace RestfulBooker.ApiTests.Api
             var notExistingBookingId = bookingId;
 
             // when
-            var request = BookingByIdRequest(notExistingBookingId, Method.GET);
-            var response = await _client.ExecuteAsync<BookingResponse>(request);
+            _request.BookingByIdRequest(notExistingBookingId, Method.GET);
+            var response = await _client.ExecuteAsync<BookingResponse>(_request);
 
             // then
             response.StatusCode.ShouldBe(HttpStatusCode.NotFound);

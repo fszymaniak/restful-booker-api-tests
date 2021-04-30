@@ -1,160 +1,116 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using RestfulBooker.ApiTests.Models.Responses;
 using Shouldly;
 
-namespace RestfulBooker.ApiTests.Api
-{
-    [Parallelizable(ParallelScope.Fixtures)]
-    [TestFixture]
-    public class GetBookingIdsTests : BookingTestBase
-    {
-        private int _expectedNumberOfFilteredBooking;
-        private int _expectedNumberOfNotExistingBooking;
+//namespace RestfulBooker.ApiTests.Api
+//{
+//    [Parallelizable(ParallelScope.Fixtures)]
+//    [TestFixture]
+//    public class GetBookingIdsTests : BookingTestBase
+//    {
+//        private int _expectedNumberOfFilteredBooking;
+//        private int _expectedNumberOfNotExistingBooking;
 
-        [OneTimeSetUp]
-        public void InitAsync()
-        {
-            _expectedNumberOfNotExistingBooking = 0;
-            _expectedNumberOfFilteredBooking = 1;
-        }
-        
-        [Test]
-        public async Task GetBookingIds_ReturnOk_ForValidRequest()
-        {
-            // given
-            var firstBooking = await CreateBooking("Jack", "Mamoa", 1000, true, "2020-08-23", "2020-08-30",
-                "Breakfasts");
+//        [OneTimeSetUp]
+//        public void InitAsync()
+//        {
+//            _expectedNumberOfNotExistingBooking = 0;
+//            _expectedNumberOfFilteredBooking = 1;
+//        }
 
-            var secondBooking = await CreateBooking("Kate", "Winslet", 1000, true, "2020-08-23", "2020-08-30",
-                "Breakfasts");
+//        [Test]
+//        public async Task GetBookingIds_ReturnOk_ForValidRequest()
+//        {
+//            // given
+//            //var firstBooking = await CreateBooking("Jack", "Mamoa", 1000, true, "2020-08-23", "2020-08-30",
+//            //    "Breakfasts");
 
-            // when 
-            var results = await GetBookingIds();
+//            //var secondBooking = await CreateBooking("Kate", "Winslet", 1000, true, "2020-08-23", "2020-08-30",
+//            //    "Breakfasts");
 
-            // then
-            results.Count().ShouldBeGreaterThanOrEqualTo(2);
+//            // when 
+//            var results = await GetBookingIds();
 
-            // clearing up
-            await DeleteBookingById(firstBooking.BookingId);
-            await DeleteBookingById(secondBooking.BookingId);
-        }
+//            // then
+//            results.Count().ShouldBeGreaterThanOrEqualTo(2);
 
-        [Test]
-        public async Task GetBookingIds_ReturnOk_ForValidRequestWithFirstAndLastName()
-        {
-            // given
-            var createdBooking = await CreateBooking("Dirk", "Nowitzki", 1000, true, "2020-08-23", "2020-08-30",
-                "Breakfasts");
+//            // clearing up
+//            var bookingIds = new List<int> { firstBooking.BookingId, secondBooking.BookingId };
+//            await DeleteBookingsByIds(bookingIds);
+//        }
 
-            // when 
-            var results = await GetBookingIdsByFirstAndLastName(createdBooking.Booking.FirstName, createdBooking.Booking.LastName);
+//        [Test]
+//        public async Task GetBookingIds_ReturnOk_ForValidRequestWithFirstAndLastName()
+//        {
+//            // given
+//            var createdBooking = await CreateBooking("Dirk", "Nowitzki", 1000, true, "2020-08-23", "2020-08-30",
+//                "Breakfasts");
 
-            // then
-            results.Count().ShouldBe(_expectedNumberOfFilteredBooking);
-            results.First().BookingId.ShouldBe(createdBooking.BookingId);
+//            // when 
+//            var results = await GetBookingIdsByFirstAndLastName(createdBooking.Booking.FirstName, createdBooking.Booking.LastName);
 
-            // clearing up
-            await DeleteBookingById(createdBooking.BookingId);
-        }
+//            // then
+//            results.Count().ShouldBe(_expectedNumberOfFilteredBooking);
+//            results.First().BookingId.ShouldBe(createdBooking.BookingId);
 
-        [Test]
-        public async Task GetBookingIds_ReturnsEmptyResponse_ForValidRequestWithFirstAndLastName()
-        {
-            // given
-            var createdBooking = await CreateBooking("Dirk", "Nowitzki", 1000, true, "2020-08-23", "2020-08-30",
-                "Breakfasts");
+//            // clearing up
+//        }
 
-            var notExistingFirstName = "notExistingFirstName";
-            var notExistingLastName = "notExistingLastName";
+//        [Test]
+//        public async Task GetBookingIds_ReturnsEmptyResponse_ForValidRequestWithFirstAndLastName()
+//        {
+//            // given
+//            var createdBooking = await CreateBooking("Dirk", "Nowitzki", 1000, true, "2020-08-23", "2020-08-30",
+//                "Breakfasts");
 
-            // when 
-            var results = await GetBookingIdsByFirstAndLastName(notExistingFirstName, notExistingLastName);
+//            var notExistingFirstName = "notExistingFirstName";
+//            var notExistingLastName = "notExistingLastName";
 
-            // then
-            results.Count().ShouldBe(_expectedNumberOfNotExistingBooking);
+//            // when 
+//            var results = await GetBookingIdsByFirstAndLastName(notExistingFirstName, notExistingLastName);
 
-            // clearing up
-            await DeleteBookingById(createdBooking.BookingId);
-        }
+//            // then
+//            results.Count().ShouldBe(_expectedNumberOfNotExistingBooking);
 
-        [Test]
-        public async Task GetBookingIds_ReturnOk_ForValidRequestWithCheckinAndCheckOut()
-        {
-            // given
-            var createdBooking = await CreateBooking("Dirk", "Nowitzki", 1000, true, "2020-08-23", "2020-08-30",
-                "Breakfasts");
-
-            // when 
-            var results = await GetBookingIdsByCheckinAndCheckout(createdBooking.Booking.BookinDates.CheckIn, createdBooking.Booking.BookinDates.CheckOut);
-
-            // then
-            results.Count().ShouldBe(_expectedNumberOfFilteredBooking);
-            results.First().BookingId.ShouldBe(createdBooking.BookingId);
-
-            // clearing up
-            await DeleteBookingById(createdBooking.BookingId);
-        }
-
-        [Test]
-        public async Task GetBookingIds_ReturnsEmptyResponse_ForValidRequestWithCheckinAndCheckOut()
-        {
-            // given
-            var createdBooking = await CreateBooking("Dirk", "Nowitzki", 1000, true, "2020-08-23", "2020-08-30",
-                "Breakfasts");
-
-            var notExistingCheckin = "notExistingCheckin";
-            var notExistingCheckout = "notExistingCheckout";
-
-            // when 
-            var results = await GetBookingIdsByCheckinAndCheckout(notExistingCheckin, notExistingCheckout);
-
-            // then
-            results.Count().ShouldBe(_expectedNumberOfNotExistingBooking);
-
-            // clearing up
-            await DeleteBookingById(createdBooking.BookingId);
-        }
+//            // clearing up
+//        }
 
         [TestCase("firstname", "Darell")]
         [TestCase("lastname", "Addams")]
-        [TestCase("checkin", "2019-09-23")]
-        [TestCase("checkout", "2019-09-30")]
         public async Task GetBookingIds_ReturnOk_ForValidRequestWithOneQueryParameter(string parameterName, string parameterValue)
         {
             // given
             var createdBooking = await CreateBooking("Darell", "Addams", 2000, true, "2019-09-23", "2019-09-30",
                 "Breakfasts");
 
-            // when 
-            var results = await GetBookingIdsByQueryParameter(parameterName, parameterValue);
+//            // when 
+//            var results = await GetBookingIdsByQueryParameter(parameterName, parameterValue);
 
-            // then
-            results.Count().ShouldBe(_expectedNumberOfFilteredBooking);
-            results.First().BookingId.ShouldBe(createdBooking.BookingId);
+//            // then
+//            results.Count().ShouldBe(_expectedNumberOfFilteredBooking);
+//            results.First().BookingId.ShouldBe(createdBooking.BookingId);
 
-            // clearing up
-            await DeleteBookingById(createdBooking.BookingId);
-        }
+//            // clearing up
+//        }
 
         [TestCase("firstname", "notExistingFirstName")]
         [TestCase("lastname", "notExistingName")]
-        [TestCase("checkin", "notExistingCheckin")]
-        [TestCase("checkout", "notExistingCheckout")]
         public async Task GetBookingIds_ReturnsEmptyResponse_ForRequestWithNoExistingQueryParameter(string parameterName, string parameterValue)
         {
             // given
             var createdBooking = await CreateBooking("Darell", "Addams", 2000, true, "2019-09-23", "2019-09-30",
                 "Breakfasts");
 
-            // when 
-            var results = await GetBookingIdsByQueryParameter(parameterName, parameterValue);
+//            // when 
+//            var results = await GetBookingIdsByQueryParameter(parameterName, parameterValue);
 
-            // then
-            results.Count().ShouldBe(_expectedNumberOfNotExistingBooking);
+//            // then
+//            results.Count().ShouldBe(_expectedNumberOfNotExistingBooking);
 
-            // clearing up
-            await DeleteBookingById(createdBooking.BookingId);
-        }
-    }
-}
+//            // clearing up
+//        }
+//    }
+//}

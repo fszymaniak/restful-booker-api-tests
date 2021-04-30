@@ -4,13 +4,25 @@ using RestfulBooker.ApiTests.Models;
 using RestSharp;
 using System.Text.Json;
 using System.Threading.Tasks;
+using RestfulBooker.ApiTests.Configurations;
+using RestfulBooker.ApiTests.Extensions;
 using RestfulBooker.ApiTests.Models.Responses;
 
 namespace RestfulBooker.ApiTests
 {
     public abstract class BookingTestBase
     {
-        protected readonly RestClient _client = new RestClient(ApiTestBase.RestfulBokerUrl);
+        private static readonly IDictionary<string, Method> PostBookingEndpointDictionary = new Dictionary<string, Method>() { { Endpoints.BookingEndpoint, Method.POST } };
+        private readonly IDictionary<string, Method> _getBookingEndpointDictionary = new Dictionary<string, Method>() { { Endpoints.BookingEndpoint, Method.GET } };
+        private readonly IDictionary<string, Method> _getBookingByIdEndpointDictionary = new Dictionary<string, Method>() { { Endpoints.GetBookingByIdEndpoint, Method.GET } };
+
+        protected RestClient _client = RestClientExtension.CreateRestClient();
+
+        private RestRequest _requestPost = RestRequestExtension.Create(PostBookingEndpointDictionary);
+
+        private RestRequest _request = new RestRequest();
+
+        private static bool FirstRequest = true;
 
         public async Task<BookingResponse> CreateBooking(string firstName, string lastName, int totalPrice, bool depositPaid, string checkIn, string checkOut, string additionalNeeds)
         {
@@ -26,33 +38,42 @@ namespace RestfulBooker.ApiTests
                 LastName = lastName,
                 TotalPrice = totalPrice,
                 DepositPaid = depositPaid,
-                BookinDates = bookingDates,
+                BookingDates = bookingDates,
                 AdditionalNeeds = additionalNeeds
             };
 
-            var request = PostBookingRequest(bookingRequest);
+            _requestPost.PostBookingRequest(bookingRequest);
 
-            var response = await _client.ExecuteAsync<BookingResponse>(request);
+            var response = await _client.ExecuteAsync<BookingResponse>(_requestPost);
             var result = JsonSerializer.Deserialize<BookingResponse>(response.Content);
 
             return result;
         }
 
-        public async Task<BookingResponse> CreateBookingUsingModel(BookingModel bookingModel)
+        public async Task<IEnumerable<BookingResponse>> CreateBookings(IEnumerable<BookingModel> bookingModels)
         {
-            var request = PostBookingRequest(bookingModel);
+            IList<BookingResponse> bookingResponses = new List<BookingResponse>();
+            int iterator = 0;
 
-            var response = await _client.ExecuteAsync<BookingResponse>(request);
-            var result = JsonSerializer.Deserialize<BookingResponse>(response.Content);
+            foreach (var booking in bookingModels)
+            {
+                _requestPost.RemoveBodyParameter(iterator, index: 2);
+                _requestPost.PostBookingRequest(booking);
+                var response = await _client.ExecuteAsync<BookingResponse>(_requestPost);
+                var result = JsonSerializer.Deserialize<BookingResponse>(response.Content);
+                bookingResponses.Add(result);
+                iterator++;
+            }
 
-            return result;
+            return bookingResponses;
         }
 
         public async Task<BookingModel> GetBookingById(int bookingId)
         {
-            var request = BookingByIdRequest(bookingId, Method.GET);
+            _request = RestRequestExtension.Create(_getBookingByIdEndpointDictionary);
+            _request.BookingByIdRequest(bookingId, Method.GET);
 
-            var response = await _client.ExecuteAsync<BookingResponse>(request);
+            var response = await _client.ExecuteAsync<BookingResponse>(_request);
             var result = JsonSerializer.Deserialize<BookingModel>(response.Content);
 
             return result;
@@ -60,36 +81,38 @@ namespace RestfulBooker.ApiTests
 
         public async Task<BookingModel> UpdateBookingById(BookingModel bookingRequest, int bookingId, Method method)
         {
-            var request = UpdateBookingByIdRequest(bookingRequest, bookingId, method);
+            _request.UpdateBookingByIdRequest(bookingRequest, bookingId, method);
 
-            var response = await _client.ExecuteAsync<BookingResponse>(request);
+            var response = await _client.ExecuteAsync<BookingResponse>(_request);
             var result = JsonSerializer.Deserialize<BookingModel>(response.Content);
 
             return result;
         }
 
-        public async Task DeleteBookingById(int bookingId)
+        public async Task DeleteBookingsByIds(RestRequest request, IEnumerable<int> bookingIds)
         {
-            var request = BookingByIdRequest(bookingId, Method.DELETE);
+            foreach(var id in bookingIds)
+            {
+                request.BookingByIdRequest(id, Method.DELETE);
 
-            await _client.ExecuteAsync<BookingResponse>(request);
+                await _client.ExecuteAsync<BookingResponse>(request);
+            }
         }
 
         public async Task<IEnumerable<BookingResponse>> GetBookingIds()
         {
-            var request = new RestRequest(Endpoints.BookingEndpoint, Method.GET);
+            _request = RestRequestExtension.Create(_getBookingEndpointDictionary);
 
-            var response = await _client.ExecuteAsync<BookingResponse>(request);
-            var result = JsonSerializer.Deserialize<IEnumerable<BookingResponse>>(response.Content);
-
-            return result;
+            return await _client.RestResponseAsync<BookingResponse, BookingResponse>(_request);
         }
 
         public async Task<IEnumerable<BookingIdsResponse>> GetBookingIdsByFirstAndLastName(string firstName, string lastName)
         {
-            var request = GetBookingByFirstAndLastNameRequest(firstName, lastName);
 
-            var response = await _client.ExecuteAsync<BookingIdsResponse>(request);
+            //_request.AddQueryParameters();
+            //_request.GetBookingByFirstAndLastNameRequest(firstName, lastName);
+
+            var response = await _client.ExecuteAsync<BookingIdsResponse>(_request);
             var result = JsonSerializer.Deserialize<IEnumerable<BookingIdsResponse>>(response.Content);
 
             return result;
@@ -97,9 +120,9 @@ namespace RestfulBooker.ApiTests
 
         public async Task<IEnumerable<BookingIdsResponse>> GetBookingIdsByCheckinAndCheckout(string checkin, string checkout)
         {
-            var request = GetBookingByCheckinAndCheckoutRequest(checkin, checkout);
+            //_request.GetBookingByCheckinAndCheckoutRequest(checkin, checkout);
 
-            var response = await _client.ExecuteAsync<BookingIdsResponse>(request);
+            var response = await _client.ExecuteAsync<BookingIdsResponse>(_request);
             var result = JsonSerializer.Deserialize<IEnumerable<BookingIdsResponse>>(response.Content);
 
             return result;
@@ -107,75 +130,14 @@ namespace RestfulBooker.ApiTests
 
         public async Task<IEnumerable<BookingIdsResponse>> GetBookingIdsByQueryParameter(string parameterName, string parameterValue)
         {
-            var request = GetBookingByQueryParameterRequest(parameterName, parameterValue);
+            _request.GetBookingByQueryParameterRequest(parameterName, parameterValue);
 
-            var response = await _client.ExecuteAsync<BookingIdsResponse>(request);
+            var response = await _client.ExecuteAsync<BookingIdsResponse>(_request);
             var result = JsonSerializer.Deserialize<IEnumerable<BookingIdsResponse>>(response.Content);
 
             return result;
         }
 
-        public RestRequest BookingByIdRequest(int bookingId, Method method)
-        {
-            var request = new RestRequest(Endpoints.GetBookingByIdEndpoint, method);
-            request.AddUrlSegment(Endpoints.GetBookingByIdSegment, bookingId);
-            request.AddHeaders();
-            request.AddAuthorizationHeader();
-
-            return request;
-        }
-
-        public RestRequest UpdateBookingByIdRequest(BookingModel bookingRequest, int bookingId, Method method)
-        {
-            var jsonRequest = JsonSerializer.Serialize(bookingRequest);
-
-            var request = new RestRequest(Endpoints.GetBookingByIdEndpoint, method);
-            request.AddUrlSegment(Endpoints.GetBookingByIdSegment, bookingId);
-            request.AddHeaders();
-            request.AddAuthorizationHeader();
-            request.AddParameter(HttpHeaders.Value.ApplicationJson, jsonRequest, ParameterType.RequestBody);
-
-            return request;
-        }
-
-        public RestRequest PostBookingRequest(BookingModel bookingRequest)
-        {
-            var jsonRequest = JsonSerializer.Serialize(bookingRequest);
-
-            var request = new RestRequest(Endpoints.BookingEndpoint, Method.POST);
-            request.AddHeaders();
-            request.AddParameter(HttpHeaders.Value.ApplicationJson, jsonRequest, ParameterType.RequestBody);
-
-            return request;
-        }
-
-        public RestRequest GetBookingByFirstAndLastNameRequest(string firstName, string lastName)
-        {
-            var request = new RestRequest(Endpoints.BookingEndpoint, Method.GET);
-            request.AddQueryParameter(Endpoints.GetBookingByFirstNameSegment, firstName);
-            request.AddQueryParameter(Endpoints.GetBookingByLastNameSegment, lastName);
-            request.AddHeaders();
-
-            return request;
-        }
-
-        public RestRequest GetBookingByCheckinAndCheckoutRequest(string checkin, string checkout)
-        {
-            var request = new RestRequest(Endpoints.BookingEndpoint, Method.GET);
-            request.AddQueryParameter(Endpoints.GetBookingByCheckinSegment, checkin);
-            request.AddQueryParameter(Endpoints.GetBookingByCheckoutSegment, checkout);
-            request.AddHeaders();
-
-            return request;
-        }
-
-        public RestRequest GetBookingByQueryParameterRequest(string urlSegment, string query)
-        {
-            var request = new RestRequest(Endpoints.BookingEndpoint, Method.GET);
-            request.AddQueryParameter(urlSegment, query);
-            request.AddHeaders();
-
-            return request;
-        }
+        
     }
 }

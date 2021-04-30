@@ -11,7 +11,7 @@ namespace RestfulBooker.ApiTests.TestData
             LastName = "Wick",
             TotalPrice = 2000,
             DepositPaid = false,
-            BookinDates = new BookingDates()
+            BookingDates = new BookingDates()
             {
                 CheckIn = DateTime.Now.AddDays(5).ToString("yyyy/MM/dd"),
                 CheckOut = DateTime.Now.AddDays(12).ToString("yyyy/MM/dd")
@@ -25,7 +25,7 @@ namespace RestfulBooker.ApiTests.TestData
             LastName = "Wick",
             TotalPrice = 3000,
             DepositPaid = true,
-            BookinDates = new BookingDates()
+            BookingDates = new BookingDates()
             {
                 CheckIn = DateTime.Now.AddDays(10).ToString("yyyy/MM/dd"),
                 CheckOut = DateTime.Now.AddDays(17).ToString("yyyy/MM/dd")
@@ -38,7 +38,7 @@ namespace RestfulBooker.ApiTests.TestData
             LastName = "Smith",
             TotalPrice = 2500,
             DepositPaid = true,
-            BookinDates = new BookingDates()
+            BookingDates = new BookingDates()
             {
                 CheckIn = DateTime.Now.AddDays(10).ToString("yyyy/MM/dd"),
                 CheckOut = DateTime.Now.AddDays(17).ToString("yyyy/MM/dd")
@@ -51,7 +51,7 @@ namespace RestfulBooker.ApiTests.TestData
             FirstName = "James",
             TotalPrice = 2500,
             DepositPaid = true,
-            BookinDates = new BookingDates()
+            BookingDates = new BookingDates()
             {
                 CheckIn = DateTime.Now.AddDays(10).ToString("yyyy/MM/dd"),
                 CheckOut = DateTime.Now.AddDays(17).ToString("yyyy/MM/dd")
@@ -64,7 +64,7 @@ namespace RestfulBooker.ApiTests.TestData
             FirstName = "James",
             LastName = "Smith",
             DepositPaid = true,
-            BookinDates = new BookingDates()
+            BookingDates = new BookingDates()
             {
                 CheckIn = DateTime.Now.AddDays(10).ToString("yyyy/MM/dd"),
                 CheckOut = DateTime.Now.AddDays(17).ToString("yyyy/MM/dd")
@@ -77,7 +77,7 @@ namespace RestfulBooker.ApiTests.TestData
             FirstName = "James",
             LastName = "Smith",
             TotalPrice = 2500,
-            BookinDates = new BookingDates()
+            BookingDates = new BookingDates()
             {
                 CheckIn = DateTime.Now.AddDays(10).ToString("yyyy/MM/dd"),
                 CheckOut = DateTime.Now.AddDays(17).ToString("yyyy/MM/dd")
@@ -90,7 +90,7 @@ namespace RestfulBooker.ApiTests.TestData
             FirstName = "James",
             LastName = "Smith",
             TotalPrice = 2500,
-            BookinDates = new BookingDates()
+            BookingDates = new BookingDates()
             {
                 CheckOut = DateTime.Now.AddDays(17).ToString("yyyy/MM/dd")
             },
@@ -102,7 +102,7 @@ namespace RestfulBooker.ApiTests.TestData
             FirstName = "James",
             LastName = "Smith",
             TotalPrice = 2500,
-            BookinDates = new BookingDates()
+            BookingDates = new BookingDates()
             {
                 CheckIn = DateTime.Now.AddDays(10).ToString("yyyy/MM/dd"),
             },
@@ -123,7 +123,7 @@ namespace RestfulBooker.ApiTests.TestData
             LastName = "Wick",
             TotalPrice = 2000,
             DepositPaid = false,
-            BookinDates = new BookingDates()
+            BookingDates = new BookingDates()
             {
                 CheckIn = DateTime.Now.AddDays(10).ToString("yyyy/MM/dd"),
                 CheckOut = DateTime.Now.AddDays(17).ToString("yyyy/MM/dd")

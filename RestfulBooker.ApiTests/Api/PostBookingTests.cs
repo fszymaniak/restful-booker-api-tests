@@ -1,119 +1,121 @@
-﻿using System.Net;
-using NUnit.Framework;
-using RestfulBooker.ApiTests.Extensions;
-using RestfulBooker.ApiTests.Models;
-using RestfulBooker.ApiTests.TestData;
-using RestSharp;
-using System.Text.Json;
-using System.Threading.Tasks;
-using Shouldly;
+﻿//using System.Net;
+//using NUnit.Framework;
+//using RestfulBooker.ApiTests.Extensions;
+//using RestfulBooker.ApiTests.Models;
+//using RestfulBooker.ApiTests.TestData;
+//using RestSharp;
+//using System.Text.Json;
+//using System.Threading.Tasks;
+//using Shouldly;
 
-namespace RestfulBooker.ApiTests.Api
-{
-    [Parallelizable(ParallelScope.Fixtures)]
-    [TestFixture]
-    public class PostBookingTests : BookingTestBase
-    {
-        [Test]
-        public async Task PostBooking_CreatesValidBooking_WhenValidModelIsSent()
-        {
-            // given
-            var bookingRequest = TestBookingModels.ValidBookingModel;
+//namespace RestfulBooker.ApiTests.Api
+//{
+//    [Parallelizable(ParallelScope.Fixtures)]
+//    [TestFixture]
+//    public class PostBookingTests : BookingTestBase
+//    {
+//        private RestRequest _request;
 
-            // when
-            var request = PostBookingRequest(bookingRequest);
-            var postResponse = await _client.ExecuteAsync<BookingResponse>(request);
-            var result = JsonSerializer.Deserialize<BookingResponse>(postResponse.Content);
+//        [Test]
+//        public async Task PostBooking_CreatesValidBooking_WhenValidModelIsSent()
+//        {
+//            // given
+//            var bookingRequest = TestBookingModels.ValidBookingModel;
 
-            var getResult = await GetBookingById(result.BookingId);
+//            // when
+//            _request.PostBookingRequest(bookingRequest);
+//            var postResponse = await _client.ExecuteAsync<BookingResponse>(_request);
+//            var result = JsonSerializer.Deserialize<BookingResponse>(postResponse.Content);
 
-            // then
-            postResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
-            getResult.ShouldBeValid(bookingRequest);
+//            var getResult = await GetBookingById(result.BookingId);
 
-            // clearing up
-            await DeleteBookingById(result.BookingId);
-        }
+//            // then
+//            postResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
+//            getResult.ShouldBeValid(bookingRequest);
 
-        [Test]
-        public async Task PostBooking_CreatesValidBooking_WhenValidModeWithoutAdditionalInfoIsSent()
-        {
-            // given
-            var bookingRequest = TestBookingModels.BookingModelWithoutAdditionalNeeds;
+//            // clearing up
+//            //await DeleteBookingsByIds(result.BookingId);
+//        }
 
-            // when
-            var request = PostBookingRequest(bookingRequest);
-            var postResponse = await _client.ExecuteAsync<BookingResponse>(request);
-            var result = JsonSerializer.Deserialize<BookingResponse>(postResponse.Content);
+//        [Test]
+//        public async Task PostBooking_CreatesValidBooking_WhenValidModeWithoutAdditionalInfoIsSent()
+//        {
+//            // given
+//            var bookingRequest = TestBookingModels.BookingModelWithoutAdditionalNeeds;
 
-            var getResult = await GetBookingById(result.BookingId);
+//            // when
+//            _request.PostBookingRequest(bookingRequest);
+//            var postResponse = await _client.ExecuteAsync<BookingResponse>(_request);
+//            var result = JsonSerializer.Deserialize<BookingResponse>(postResponse.Content);
 
-            // then
-            postResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
-            getResult.ShouldBeValid(bookingRequest);
+//            var getResult = await GetBookingById(result.BookingId);
 
-            // clearing up
-            await DeleteBookingById(result.BookingId);
-        }
+//            // then
+//            postResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
+//            getResult.ShouldBeValid(bookingRequest);
 
-        [Test]
-        public async Task PostBooking_CreatesValidBooking_WhenValidModeWithoutTotalPriceIsSent()
-        {
-            // given
-            var bookingRequest = TestBookingModels.BookingModelWithoutTotalPrice;
-            var finalBookingRequest = bookingRequest;
-            finalBookingRequest.TotalPrice = 0;
+//            // clearing up
+//            //await DeleteBookingsByIds(result.BookingId);
+//        }
 
-            // when
-            var request = PostBookingRequest(bookingRequest);
-            var postResponse = await _client.ExecuteAsync<BookingResponse>(request);
-            var result = JsonSerializer.Deserialize<BookingResponse>(postResponse.Content);
+//        [Test]
+//        public async Task PostBooking_CreatesValidBooking_WhenValidModeWithoutTotalPriceIsSent()
+//        {
+//            // given
+//            var bookingRequest = TestBookingModels.BookingModelWithoutTotalPrice;
+//            var finalBookingRequest = bookingRequest;
+//            finalBookingRequest.TotalPrice = 0;
 
-            var getResult = await GetBookingById(result.BookingId);
+//            // when
+//            _request.PostBookingRequest(bookingRequest);
+//            var postResponse = await _client.ExecuteAsync<BookingResponse>(_request);
+//            var result = JsonSerializer.Deserialize<BookingResponse>(postResponse.Content);
 
-            // then
-            postResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
-            getResult.ShouldBeValid(bookingRequest);
+//            var getResult = await GetBookingById(result.BookingId);
 
-            // clearing up
-            await DeleteBookingById(result.BookingId);
-        }
+//            // then
+//            postResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
+//            getResult.ShouldBeValid(bookingRequest);
 
-        [Test]
-        public async Task PostBooking_CreatesValidBooking_WhenValidModeWithoutDepositPaidIsSent()
-        {
-            // given
-            var bookingRequest = TestBookingModels.BookingModelWithoutTotalPrice;
-            var finalBookingRequest = bookingRequest;
-            finalBookingRequest.DepositPaid = false;
+//            // clearing up
+//            //await DeleteBookingsByIds(result.BookingId);
+//        }
 
-            // when
-            var request = PostBookingRequest(bookingRequest);
-            var postResponse = await _client.ExecuteAsync<BookingResponse>(request);
-            var result = JsonSerializer.Deserialize<BookingResponse>(postResponse.Content);
+//        [Test]
+//        public async Task PostBooking_CreatesValidBooking_WhenValidModeWithoutDepositPaidIsSent()
+//        {
+//            // given
+//            var bookingRequest = TestBookingModels.BookingModelWithoutTotalPrice;
+//            var finalBookingRequest = bookingRequest;
+//            finalBookingRequest.DepositPaid = false;
 
-            var getResult = await GetBookingById(result.BookingId);
+//            // when
+//            _request.PostBookingRequest(bookingRequest);
+//            var postResponse = await _client.ExecuteAsync<BookingResponse>(_request);
+//            var result = JsonSerializer.Deserialize<BookingResponse>(postResponse.Content);
 
-            // then
-            postResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
-            getResult.ShouldBeValid(bookingRequest);
+//            var getResult = await GetBookingById(result.BookingId);
 
-            // clearing up
-            await DeleteBookingById(result.BookingId);
-        }
+//            // then
+//            postResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
+//            getResult.ShouldBeValid(bookingRequest);
 
-        [Test, TestCaseSource(typeof(TestBookingModels), nameof(TestBookingModels.InvalidBookingModels))]
-        public async Task PostBooking_Returns500InvalidServerError_WhenInvalidModelIsSent(BookingModel invalidBookingModel)
-        {
-            // given
-            var bookingRequest = invalidBookingModel;
+//            // clearing up
+//            //await DeleteBookingsByIds(result.BookingId);
+//        }
 
-            // when
-            var request = PostBookingRequest(bookingRequest);
-            var response = await _client.ExecuteAsync<BookingResponse>(request);
+//        [Test, TestCaseSource(typeof(TestBookingModels), nameof(TestBookingModels.InvalidBookingModels))]
+//        public async Task PostBooking_Returns500InvalidServerError_WhenInvalidModelIsSent(BookingModel invalidBookingModel)
+//        {
+//            // given
+//            var bookingRequest = invalidBookingModel;
 
-            // then
-            response.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
-        }
-    }
-}
+//            // when
+//            _request.PostBookingRequest(bookingRequest);
+//            var response = await _client.ExecuteAsync<BookingResponse>(_request);
+
+//            // then
+//            response.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
+//        }
+//    }
+//}
