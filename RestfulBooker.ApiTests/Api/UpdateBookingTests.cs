@@ -8,21 +8,21 @@
 //using RestSharp;
 //using Shouldly;
 
-namespace RestfulBooker.ApiTests.Api
-{
-    [Parallelizable(ParallelScope.Fixtures)]
-    [TestFixture]
-    public class UpdateBookingTests : BookingTestBase
-    {
-       
+//namespace RestfulBooker.ApiTests.Api
+//{
+//    [Parallelizable(ParallelScope.Fixtures)]
+//    [TestFixture]
+//    public class UpdateBookingTests : BookingTestBase
+//    {
 
-        [Test]
-        public async Task PutBooking_UpdateAllFieldsOfBooking_WhenValidModelIsSent()
-        {
-            // given
-            var booking = await CreateBooking("Mary", "Jane", 1000, true, "2020-08-23", "2020-08-30",
-                "Breakfasts");
-            var bookingRequest = TestBookingModels.ValidBookingModel;
+
+//        [Test]
+//        public async Task PutBooking_UpdateAllFieldsOfBooking_WhenValidModelIsSent()
+//        {
+//            // given
+//            var booking = await CreateBooking("Mary", "Jane", 1000, true, "2020-08-23", "2020-08-30",
+//                "Breakfasts");
+//            var bookingRequest = TestBookingModels.ValidBookingModel;
 
 //            // then
 //            results.ShouldBeValid(bookingRequest);
@@ -106,12 +106,12 @@ namespace RestfulBooker.ApiTests.Api
 //            //await DeleteBookingsByIds(booking.BookingId);
 //        }
 
-        [Test]
-        public async Task PutBooking_Returns405MethodNotAllowed_WhenBookingIsCreated()
-        {
-            // given
-            var bookingRequest = TestBookingModels.ValidBookingModel;
-            var bookingId = 100;
+//        [Test]
+//        public async Task PutBooking_Returns405MethodNotAllowed_WhenBookingIsCreated()
+//        {
+//            // given
+//            var bookingRequest = TestBookingModels.ValidBookingModel;
+//            var bookingId = 100;
 
 //            // when
 //            var request = UpdateBookingByIdRequest(bookingRequest, bookingId, Method.PUT);

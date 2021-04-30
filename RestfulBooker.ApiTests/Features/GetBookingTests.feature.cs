@@ -133,6 +133,67 @@ testRunner.Then("expected bookings should be valid to booking responses", ((stri
             }
             this.ScenarioCleanup();
         }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("Get Booking returns status code 200 (OK) when Id exists")]
+        public virtual void GetBookingReturnsStatusCode200OKWhenIdExists()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Get Booking returns status code 200 (OK) when Id exists", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+#line 11
+this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            bool isScenarioIgnored = default(bool);
+            bool isFeatureIgnored = default(bool);
+            if ((tagsOfScenario != null))
+            {
+                isScenarioIgnored = tagsOfScenario.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((this._featureTags != null))
+            {
+                isFeatureIgnored = this._featureTags.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((isScenarioIgnored || isFeatureIgnored))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                this.ScenarioStart();
+                TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
+                            "FirstName",
+                            "LastName",
+                            "TotalPrice",
+                            "DepositPaid",
+                            "BookingDates",
+                            "AdditionalNeeds"});
+                table2.AddRow(new string[] {
+                            "Phill",
+                            "Collins",
+                            "1000",
+                            "true",
+                            "2020-10-01 / 2020-10-30",
+                            "Breakfasts"});
+                table2.AddRow(new string[] {
+                            "Lebron",
+                            "James",
+                            "1500",
+                            "false",
+                            "2020-11-23 / 2020-12-06",
+                            "Dinners"});
+#line 12
+testRunner.Given("bookings exist", ((string)(null)), table2, "Given ");
+#line hidden
+#line 16
+testRunner.When("GET Booking by Id request returns booking response", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 17
+testRunner.Then("expected bookings should return expected status code 200", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+            }
+            this.ScenarioCleanup();
+        }
     }
 }
 #pragma warning restore

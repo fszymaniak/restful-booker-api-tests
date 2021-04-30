@@ -27,10 +27,10 @@ namespace RestfulBooker.ApiTests.Extensions
             && bR.AdditionalNeeds == bM.AdditionalNeeds;
         }
 
-        public static bool ShouldHaveValidStatusCode(this IEnumerable<BookingResponse> bookingResponses, HttpStatusCode statusCode)
-        {
-            bookingResponses.Select(bR => bR.)
-        }
+        //public static bool ShouldHaveValidStatusCode(this IEnumerable<BookingResponse> bookingResponses, HttpStatusCode statusCode)
+        //{
+        //    bookingResponses.Select(bR => bR.)
+        //}
 
         public static void ShouldBeValid(this BookingModel bookingModel, BookingResponse bookingResponse)
         {
