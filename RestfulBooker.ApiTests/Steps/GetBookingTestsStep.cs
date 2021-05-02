@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
 using RestfulBooker.ApiTests.Constants;
 using RestfulBooker.ApiTests.Extensions;
 using RestfulBooker.ApiTests.Models;
+using RestfulBooker.ApiTests.Models.Responses;
 using RestSharp;
 using TechTalk.SpecFlow;
 
@@ -41,25 +43,32 @@ namespace RestfulBooker.ApiTests.Steps
                 .ToList();
 
             _scenarioContext.SetExpectedBookings(bookingModels);
+
             _scenarioContext.SetBookingsIds(bookingsIds);
         }
 
+        [Given(@"not existing bookings")]
+        public void GivenNotExisting(IEnumerable<int> notExistingBookingId)
+        {
+            _scenarioContext.SetBookingsIds(notExistingBookingId);
+        }
+
         [When(@"GET Booking by Id request is sent")]
-        public async Task WhenGETBookingByIdRequestIsSent()
+        public async Task WhenGetBookingByIdRequestIsSent()
         {
             var bookingsIds = _scenarioContext.GetBookingsIds();
 
-            var bookingResponses = await GetBookingsResultsById<BookingModel>(bookingsIds);
+            var bookingResponses = await GetBookingsById(bookingsIds);
 
             _scenarioContext.SetBookingModelResponses(bookingResponses);
         }
 
         [When(@"GET Booking by Id request returns booking response")]
-        public async Task WhenGETBookingByIdRequestReturnsBookingResponse()
+        public async Task WhenGetBookingByIdRequestReturnsBookingResponse()
         {
             var bookingsIds = _scenarioContext.GetBookingsIds();
 
-            var bookingResponses = await GetBookingsResultsById<BookingResponse>(bookingsIds);
+            var bookingResponses = await GetBookingsResponsesById(bookingsIds);
 
             _scenarioContext.SetBookingResponses(bookingResponses);
         }
@@ -76,55 +85,38 @@ namespace RestfulBooker.ApiTests.Steps
         }
 
         [Then(@"expected bookings should return expected status code (.*)")]
-        public void ThenExpectedBookingsShouldReturnExpectedStatusCode(int p0)
+        public void ThenExpectedBookingsShouldReturnExpectedStatusCode(HttpStatusCode statusCode)
         {
             var bookingModelResponses = _scenarioContext.GetBookingResponses();
 
-            //bookingModelResponses
+            bookingModelResponses.ShouldHaveValidStatusCode(statusCode);
         }
 
-
-        //private async Task<IEnumerable<BookingModel>> GetBookingsById(IEnumerable<int> bookingsIds)
-        //{
-        //    IList<BookingModel> bookingModels = new List<BookingModel>();
-        //    foreach (var id in bookingsIds)
-        //    {
-        //        _request.BookingByIdRequest(id, Method.GET);
-        //        var response = await _client.ExecuteAsync<BookingResponse>(_request);
-        //        var result = JsonSerializer.Deserialize<BookingModel>(response.Content);
-        //        bookingModels.Add(result);
-        //    }
-
-        //    return bookingModels;
-        //}
-
-        private async Task<IEnumerable<T>> GetBookingsResultsById<T>(IEnumerable<int> bookingsIds) where T: class, new()
+        private async Task<IEnumerable<BookingModel>> GetBookingsById(IEnumerable<int> bookingsIds)
         {
-            var type = new T();
-            
-            IList<T> bookingModels = new List<T>();
-            
+            IList<BookingModel> bookingModels = new List<BookingModel>();
             foreach (var id in bookingsIds)
             {
                 _request.BookingByIdRequest(id, Method.GET);
                 var response = await _client.ExecuteAsync<BookingResponse>(_request);
-
-                switch (type)
-                {
-                    case BookingModel _:
-                    {
-                        var result = JsonSerializer.Deserialize<T>(response.Content);
-                        bookingModels.Add((T)result);
-                        break;
-                    }
-                    case BookingResponse _:
-                        bookingModels.Add((T)(IRestResponse<T>)response);
-                        break;
-                }
-                
+                var result = JsonSerializer.Deserialize<BookingModel>(response.Content);
+                bookingModels.Add(result);
             }
 
             return bookingModels;
+        }
+
+        private async Task<IEnumerable<IRestResponse<BookingResponse>>> GetBookingsResponsesById(IEnumerable<int> bookingsIds)
+        {
+            IList<IRestResponse<BookingResponse>> bookingResponse = new List<IRestResponse<BookingResponse>>();
+            foreach (var id in bookingsIds)
+            {
+                _request.BookingByIdRequest(id, Method.GET);
+                var response = await _client.ExecuteAsync<BookingResponse>(_request);
+                bookingResponse.Add(response);
+            }
+
+            return bookingResponse;
         }
     }
 }

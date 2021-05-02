@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Net;
 using RestfulBooker.ApiTests.Models;
+using RestSharp;
 using Shouldly;
 
 namespace RestfulBooker.ApiTests.Extensions
@@ -27,10 +28,13 @@ namespace RestfulBooker.ApiTests.Extensions
             && bR.AdditionalNeeds == bM.AdditionalNeeds;
         }
 
-        //public static bool ShouldHaveValidStatusCode(this IEnumerable<BookingResponse> bookingResponses, HttpStatusCode statusCode)
-        //{
-        //    bookingResponses.Select(bR => bR.)
-        //}
+        public static void ShouldHaveValidStatusCode(this IEnumerable<IRestResponse<BookingResponse>> bookingResponses, HttpStatusCode statusCode)
+        {
+            foreach (var response in bookingResponses)
+            {
+                response.StatusCode.ShouldBe(statusCode);
+            }
+        }
 
         public static void ShouldBeValid(this BookingModel bookingModel, BookingResponse bookingResponse)
         {

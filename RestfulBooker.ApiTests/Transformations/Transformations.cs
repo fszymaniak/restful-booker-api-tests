@@ -1,6 +1,7 @@
 ﻿using RestfulBooker.ApiTests.Models;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using TechTalk.SpecFlow;
 
 namespace RestfulBooker.ApiTests.Transformations
@@ -20,6 +21,19 @@ namespace RestfulBooker.ApiTests.Transformations
                 BookingDates = GetBookingDates(r["BookingDates"]),
                 AdditionalNeeds = r["AdditionalNeeds"]
                 }).ToList();
+        }
+
+        [StepArgumentTransformation(@"should return expected status code (\d+)")]
+        public HttpStatusCode TransformToHttpStatusCode(int statusCode)
+        {
+            return (HttpStatusCode)statusCode;
+        }
+
+        [StepArgumentTransformation(@"not existing bookings")]
+        public IEnumerable<int> TransformToListOfNotExistingBookingIds(Table table)
+        {
+            return table.Rows
+                .Select(r => int.Parse(r["NotExistingBookingsIds"])).ToList();
         }
 
         private static BookingDates GetBookingDates(string bookingDates)

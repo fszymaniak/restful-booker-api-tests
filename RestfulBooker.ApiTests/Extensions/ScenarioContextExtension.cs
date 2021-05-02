@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using RestfulBooker.ApiTests.Models;
+using RestSharp;
 using TechTalk.SpecFlow;
 
 namespace RestfulBooker.ApiTests.Extensions
@@ -11,6 +12,7 @@ namespace RestfulBooker.ApiTests.Extensions
     {
         private const string ExpectedBookings = nameof(ExpectedBookings);
         private const string BookingsIds = nameof(BookingsIds);
+        private const string NotExistingBookingsIds = nameof(NotExistingBookingsIds);
         private const string BookingModelResponses = nameof(BookingModelResponses);
         private const string BookingResponses = nameof(BookingResponses);
 
@@ -30,7 +32,7 @@ namespace RestfulBooker.ApiTests.Extensions
             scenarioContext[BookingModelResponses] = bookingModelResponses;
         }
 
-        public static void SetBookingResponses(this ScenarioContext scenarioContext, IEnumerable<BookingResponse> bookingsResponses)
+        public static void SetBookingResponses(this ScenarioContext scenarioContext, IEnumerable<IRestResponse<BookingResponse>> bookingsResponses)
         {
             scenarioContext[BookingResponses] = bookingsResponses;
         }
@@ -50,10 +52,9 @@ namespace RestfulBooker.ApiTests.Extensions
             return (IEnumerable<BookingModel>)scenarioContext[BookingModelResponses];
         }
 
-        public static IEnumerable<BookingResponse> GetBookingResponses(this ScenarioContext scenarioContext)
+        public static IEnumerable<IRestResponse<BookingResponse>> GetBookingResponses(this ScenarioContext scenarioContext)
         {
-            return (IEnumerable<BookingResponse>)scenarioContext[BookingModelResponses];
+            return (IEnumerable<IRestResponse<BookingResponse>>)scenarioContext[BookingResponses];
         }
-
     }
 }
