@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using RestfulBooker.ApiTests.Models;
+using RestfulBooker.ApiTests.Models.Responses;
 using RestSharp;
 using TechTalk.SpecFlow;
 
@@ -12,9 +13,10 @@ namespace RestfulBooker.ApiTests.Extensions
     {
         private const string ExpectedBookings = nameof(ExpectedBookings);
         private const string BookingsIds = nameof(BookingsIds);
-        private const string NotExistingBookingsIds = nameof(NotExistingBookingsIds);
+        private const string InitialNumberOfBookingIds = nameof(InitialNumberOfBookingIds);
+        private const string BookingIdsResponses = nameof(BookingIdsResponses);
         private const string BookingModelResponses = nameof(BookingModelResponses);
-        private const string BookingResponses = nameof(BookingResponses);
+        private const string RestBookingResponses = nameof(RestBookingResponses);
 
 
         public static void SetExpectedBookings(this ScenarioContext scenarioContext, IEnumerable<BookingModel> bookingModels)
@@ -27,14 +29,24 @@ namespace RestfulBooker.ApiTests.Extensions
             scenarioContext[BookingsIds] = bookingsIds;
         }
 
+        public static void SetInitialNumberOfBookingIds(this ScenarioContext scenarioContext, int bookingsResponse)
+        {
+            scenarioContext[InitialNumberOfBookingIds] = bookingsResponse;
+        }
+
+        public static void SetBookingIdsResponses(this ScenarioContext scenarioContext, IEnumerable<BookingIdsResponse> bookingsIdsResponse)
+        {
+            scenarioContext[BookingIdsResponses] = bookingsIdsResponse;
+        }
+
         public static void SetBookingModelResponses(this ScenarioContext scenarioContext, IEnumerable<BookingModel> bookingModelResponses)
         {
             scenarioContext[BookingModelResponses] = bookingModelResponses;
         }
 
-        public static void SetBookingResponses(this ScenarioContext scenarioContext, IEnumerable<IRestResponse<BookingResponse>> bookingsResponses)
+        public static void SetRestBookingResponses(this ScenarioContext scenarioContext, IEnumerable<IRestResponse<BookingResponse>> bookingsResponses)
         {
-            scenarioContext[BookingResponses] = bookingsResponses;
+            scenarioContext[RestBookingResponses] = bookingsResponses;
         }
 
         public static IEnumerable<BookingModel> GetExpectedBookings(this ScenarioContext scenarioContext)
@@ -52,9 +64,19 @@ namespace RestfulBooker.ApiTests.Extensions
             return (IEnumerable<BookingModel>)scenarioContext[BookingModelResponses];
         }
 
-        public static IEnumerable<IRestResponse<BookingResponse>> GetBookingResponses(this ScenarioContext scenarioContext)
+        public static IEnumerable<IRestResponse<BookingResponse>> GetRestBookingResponses(this ScenarioContext scenarioContext)
         {
-            return (IEnumerable<IRestResponse<BookingResponse>>)scenarioContext[BookingResponses];
+            return (IEnumerable<IRestResponse<BookingResponse>>)scenarioContext[RestBookingResponses];
+        }
+
+        public static int GetInitialNumberOfBookingIds(this ScenarioContext scenarioContext)
+        {
+            return (int)scenarioContext[InitialNumberOfBookingIds];
+        }
+
+        public static IEnumerable<BookingIdsResponse> GetBookingIdsResponses(this ScenarioContext scenarioContext)
+        {
+            return (IEnumerable<BookingIdsResponse>)scenarioContext[BookingIdsResponses];
         }
     }
 }

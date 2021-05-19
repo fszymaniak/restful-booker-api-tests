@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
+using NUnit.Framework;
 using RestfulBooker.ApiTests.Constants;
 using RestfulBooker.ApiTests.Extensions;
 using RestfulBooker.ApiTests.Models;
@@ -13,6 +14,7 @@ using TechTalk.SpecFlow;
 
 namespace RestfulBooker.ApiTests.Steps
 {
+    [Parallelizable(ParallelScope.Fixtures)]
     [Binding]
     public class GetBookingTestsStep : BookingTestBase
     {
@@ -25,27 +27,27 @@ namespace RestfulBooker.ApiTests.Steps
             _scenarioContext = scenarioContext;
         }
 
-        [AfterScenario]
-        private async Task CleanUp()
-        {
-            var bookingsIds = _scenarioContext.GetBookingsIds();
+        //[AfterScenario]
+        //private async Task CleanUp()
+        //{
+        //    var bookingsIds = _scenarioContext.GetBookingsIds();
 
-            await DeleteBookingsByIds(_request, bookingsIds);
-        }
+        //    await DeleteBookingsByIds(_request, bookingsIds);
+        //}
 
-        [Given(@"bookings exist")]
-        public async Task GivenBookingsExist(IList<BookingModel> bookingModels)
-        {
-            var bookings = await CreateBookings(bookingModels);
+        //[Given(@"bookings exist")]
+        //public async Task GivenBookingsExist(IList<BookingModel> bookingModels)
+        //{
+        //    var bookings = await CreateBookings(bookingModels);
 
-            var bookingsIds = bookings
-                .Select(b => b.BookingId)
-                .ToList();
+        //    var bookingsIds = bookings
+        //        .Select(b => b.BookingId)
+        //        .ToList();
 
-            _scenarioContext.SetExpectedBookings(bookingModels);
+        //    _scenarioContext.SetExpectedBookings(bookingModels);
 
-            _scenarioContext.SetBookingsIds(bookingsIds);
-        }
+        //    _scenarioContext.SetBookingsIds(bookingsIds);
+        //}
 
         [Given(@"not existing bookings")]
         public void GivenNotExisting(IEnumerable<int> notExistingBookingId)
@@ -70,7 +72,7 @@ namespace RestfulBooker.ApiTests.Steps
 
             var bookingResponses = await GetBookingsResponsesById(bookingsIds);
 
-            _scenarioContext.SetBookingResponses(bookingResponses);
+            _scenarioContext.SetRestBookingResponses(bookingResponses);
         }
 
 
@@ -87,7 +89,7 @@ namespace RestfulBooker.ApiTests.Steps
         [Then(@"expected bookings should return expected status code (.*)")]
         public void ThenExpectedBookingsShouldReturnExpectedStatusCode(HttpStatusCode statusCode)
         {
-            var bookingModelResponses = _scenarioContext.GetBookingResponses();
+            var bookingModelResponses = _scenarioContext.GetRestBookingResponses();
 
             bookingModelResponses.ShouldHaveValidStatusCode(statusCode);
         }

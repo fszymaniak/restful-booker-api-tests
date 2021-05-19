@@ -1,5 +1,7 @@
-﻿using RestfulBooker.ApiTests.Models;
+﻿using System;
+using RestfulBooker.ApiTests.Models;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using TechTalk.SpecFlow;
@@ -39,12 +41,18 @@ namespace RestfulBooker.ApiTests.Transformations
         private static BookingDates GetBookingDates(string bookingDates)
         {
             var parts = bookingDates.Split('/').Select(p => p.Trim()).ToList();
+            var format = "yyyy-MM-dd";
 
             return new BookingDates()
             {
-                CheckIn = parts.First(),
-                CheckOut = parts.Last()
+                CheckIn = ParseDateTimeFromString(parts.First(), format),
+                CheckOut = ParseDateTimeFromString(parts.Last(), format)
             };
+        }
+
+        private static DateTime ParseDateTimeFromString(string str, string format)
+        {
+            return DateTime.ParseExact(str, format, CultureInfo.InvariantCulture);
         }
 
     }

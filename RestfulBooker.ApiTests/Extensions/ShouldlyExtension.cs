@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Net;
 using RestfulBooker.ApiTests.Models;
+using RestfulBooker.ApiTests.Models.Responses;
 using RestSharp;
 using Shouldly;
 
@@ -34,6 +35,12 @@ namespace RestfulBooker.ApiTests.Extensions
             {
                 response.StatusCode.ShouldBe(statusCode);
             }
+        }
+
+        public static bool ShouldIncludesBookingIds(this IEnumerable<BookingIdsResponse> bookingIdsResponses, IEnumerable<int> bookingIds)
+        {
+            var actualBookingIds = bookingIdsResponses.Select(bR => bR.BookingId).ToList();
+            return bookingIds.All(id => actualBookingIds.Contains(id));
         }
 
         public static void ShouldBeValid(this BookingModel bookingModel, BookingResponse bookingResponse)

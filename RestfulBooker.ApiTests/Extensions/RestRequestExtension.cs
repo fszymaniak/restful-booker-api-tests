@@ -13,31 +13,17 @@ namespace RestfulBooker.ApiTests.Extensions
 {
     public static class RestRequestExtension
     {
-        private static readonly IDictionary<string, Method> GetBookingEndpointDictionary = new Dictionary<string, Method>() { { Endpoints.BookingEndpoint, Method.GET } };
-
-
         public static void SetUpRequestWithAdditionalInformation(this RestRequest request, Method method, string segment, int bookingId)
         {
+            request.Method = method;
             request.AddUrlSegment(segment, bookingId);
-            request.AddHeaders();
-            request.AddAuthorizationHeader();
-        }
-
-        public static void AddQueryParameters(this RestRequest request, IDictionary<string, Method> endpointWithMethod, IEnumerable<IDictionary<string, string>> queryParameters)
-        {
-            //request = Create(endpointWithMethod);
-            request = request.Create(endpointWithMethod);
-
-            foreach (var parameter in queryParameters)
-            {
-                request.AddQueryParameter(parameter.FirstOrDefault().Key, parameter.FirstOrDefault().Value);
-            }
         }
 
         public static void AddAuthorizationHeader(this RestRequest request)
         {
             var token = ApiTestBase.GetAuthToken();
             var headerValue = $"token={token}";
+            request.AddHeader(HttpHeaders.Name.Authorization, HttpHeaders.Value.AuthorizationBasic);
             request.AddHeader(HttpHeaders.Name.Cookie, headerValue);
         }
 
@@ -73,7 +59,6 @@ namespace RestfulBooker.ApiTests.Extensions
 
         public static void BookingByIdRequest(this RestRequest request, int bookingId, Method method)
         {
-            
             request.SetUpRequestWithAdditionalInformation(method, Endpoints.GetBookingByIdSegment, bookingId);
         }
 
@@ -93,14 +78,14 @@ namespace RestfulBooker.ApiTests.Extensions
             request.AddParameter(HttpHeaders.Value.ApplicationJson, jsonRequest, ParameterType.RequestBody);
         }
 
-        public static void GetBookingByFirstAndLastNameRequest(this RestRequest request, IEnumerable<IDictionary<string, string>> fullNamesDictionary)
+        public static void GetBookingByFirstAndLastNameRequest(this RestRequest request, string firstName, string lastName)
         {
-            request.AddQueryParameters(GetBookingEndpointDictionary, fullNamesDictionary);
+            request.SetUpFilters(firstName, lastName, Endpoints.GetBookingByFirstNameSegment, Endpoints.GetBookingByLastNameSegment);
         }
 
-        public static void GetBookingByCheckinAndCheckoutRequest(this RestRequest request, IEnumerable<IDictionary<string, string>> checkInCheckOutDictionary)
+        public static void GetBookingByCheckinAndCheckoutRequest(this RestRequest request, string checkin, string checkout)
         {
-            request.AddQueryParameters(GetBookingEndpointDictionary, checkInCheckOutDictionary);
+            request.SetUpFilters(checkin, checkout, Endpoints.GetBookingByCheckinSegment, Endpoints.GetBookingByCheckoutSegment);
         }
 
         public static void GetBookingByQueryParameterRequest(this RestRequest request, string urlSegment, string query)
@@ -118,6 +103,28 @@ namespace RestfulBooker.ApiTests.Extensions
         {
             request.AddHeader(HttpHeaders.Name.ContentType, HttpHeaders.Value.ApplicationJson);
             request.AddHeader(HttpHeaders.Name.Accept, HttpHeaders.Value.ApplicationJson);
+        }
+
+        private static void SetUpFilters(this RestRequest request, string filter1, string filter2, string segment1, string segment2)
+        {
+            filter1.Trim();
+            filter2.Trim();
+            filter1 = filter1 == "<null>" ? null : filter1;
+            filter2 = filter2 == "<null>" ? null : filter2;
+
+            if (filter1 == null)
+            {
+                request.AddQueryParameter(segment2, filter2);
+            }
+            else if (filter2 == null)
+            {
+                request.AddQueryParameter(segment1, filter1);
+            }
+            else
+            {
+                request.AddQueryParameter(segment1, filter1);
+                request.AddQueryParameter(segment2, filter2);
+            }
         }
     }
 }

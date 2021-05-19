@@ -14,11 +14,15 @@ namespace RestfulBooker.ApiTests.Constants
             public static string Accept => "Accept";
 
             public static string Cookie => "Cookie";
+
+            public static string Authorization => "Authorization";
         }
 
         public static class Value
         {
             public static string ApplicationJson => "application/json";
+
+            public static string AuthorizationBasic => "Basic";
         }
         
     }
