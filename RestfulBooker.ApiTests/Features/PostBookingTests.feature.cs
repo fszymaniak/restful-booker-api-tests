@@ -283,6 +283,9 @@ testRunner.When("POST Bookings request is sent", ((string)(null)), ((TechTalk.Sp
 #line 36
 testRunner.Then("expected bookings should return expected status code 500", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
+#line 37
+testRunner.And("bookings should not exist", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
             }
             this.ScenarioCleanup();
         }

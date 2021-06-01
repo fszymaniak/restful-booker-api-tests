@@ -34,9 +34,9 @@ Given invalid booking model without <ExcludedRow> exists
 | Jack      | Mamoa    | 1000       | true        | 2020-08-23 / 2020-08-30 | Breakfasts      |
 When POST Bookings request is sent
 Then expected bookings should return expected status code 500
+And bookings should not exist
 Examples: 
 | ExcludedRow  |
 | FirstName    |
 | LastName     |
 | BookingDates |
-
