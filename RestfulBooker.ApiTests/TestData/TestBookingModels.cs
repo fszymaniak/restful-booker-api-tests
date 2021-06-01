@@ -152,8 +152,8 @@
 //            DepositPaid = false,
 //            BookingDates = new BookingDates()
 //            {
-//                CheckIn = DateTime.Now.AddDays(10).ToString("yyyy/MM/dd"),
-//                CheckOut = DateTime.Now.AddDays(12).ToString("yyyy/MM/dd")
+//                CheckIn = DateTime.Now.AddDays(10)("yyyy/MM/dd"),
+//                CheckOut = DateTime.Now.AddDays(12)("yyyy/MM/dd")
 //            },
 //            AdditionalNeeds = "Launch"
 //        };
@@ -163,7 +163,7 @@
 //            return new BookingModel[]
 //            {
 //                BookingModelWithoutFirstName,
-//                BookingModelWithoutLastName, 
+//                BookingModelWithoutLastName,
 //                BookingModelWithoutCheckIn,
 //                BookingModelWithoutCheckOut,
 //                BookingModelWithoutBookingDates,

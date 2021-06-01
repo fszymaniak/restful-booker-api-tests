@@ -43,6 +43,12 @@ namespace RestfulBooker.ApiTests.Extensions
             return bookingIds.All(id => actualBookingIds.Contains(id));
         }
 
+        public static bool ShouldNotIncludesBookingIds(this IEnumerable<BookingIdsResponse> bookingIdsResponses, IEnumerable<int> bookingIds)
+        {
+            var actualBookingIds = bookingIdsResponses.Select(bR => bR.BookingId).ToList();
+            return bookingIds.All(id => !actualBookingIds.Contains(id));
+        }
+
         public static void ShouldBeValid(this BookingModel bookingModel, BookingResponse bookingResponse)
         {
             bookingModel.ShouldSatisfyAllConditions(

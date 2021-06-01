@@ -20,14 +20,6 @@ namespace RestfulBooker.ApiTests.Steps
             _scenarioContext = scenarioContext;
         }
 
-        [When(@"GET Bookings Ids request is sent")]
-        public async Task WhenGETBookingsIdsRequestIsSent()
-        {
-            var bookingsIdsResponse = await GetBookingIds();
-
-            _scenarioContext.SetBookingIdsResponses(bookingsIdsResponse);
-        }
-
         [When(@"GET filtered Bookings Ids by first and last name: (.*) (.*)")]
         public async Task WhenGETFilteredBookingsIdsByFirstAndLastName(string firstName, string lastName)
         {
@@ -52,23 +44,6 @@ namespace RestfulBooker.ApiTests.Steps
 
             _expectedNumerOfBookings = getExpectedBookings.Count(x =>
                 x.BookingDates.CheckIn >= checkinDate || x.BookingDates.CheckOut >= checkoutDate);
-        }
-
-        [Then(@"expected bookings should exist")]
-        public void ThenExpectedBookingsShouldExists()
-        {
-            var expectedBookingIds = _scenarioContext.GetBookingsIds();
-
-            var expectedNumberOfBookingIds = expectedBookingIds.Count();
-
-            var bookingsIdsResponse = _scenarioContext.GetBookingIdsResponses();
-
-            var currentNumberOfBookingIds = bookingsIdsResponse.Count();
-
-            var actualNumberOfBookingIds = currentNumberOfBookingIds - _scenarioContext.GetInitialNumberOfBookingIds();
-
-            Assert.IsTrue(actualNumberOfBookingIds.Equals(expectedNumberOfBookingIds));
-            bookingsIdsResponse.ShouldIncludesBookingIds(expectedBookingIds);
         }
 
         [Then(@"bookings Ids should be filtered properly")]

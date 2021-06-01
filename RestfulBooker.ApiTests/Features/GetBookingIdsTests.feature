@@ -1,5 +1,4 @@
-﻿
-Feature: GetBookingIds endpoint tests
+﻿Feature: GetBookingIds endpoint tests
 
 @GetInitialBookingIds
 Scenario: Get Booking returns valid Booking when Id exists

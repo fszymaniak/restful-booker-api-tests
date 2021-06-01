@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 using RestfulBooker.ApiTests.Extensions;
 using RestfulBooker.ApiTests.Models.Responses;
 using System.Text.RegularExpressions;
+using System;
+using System.Globalization;
+using TechTalk.SpecFlow;
 
 namespace RestfulBooker.ApiTests
 {
@@ -25,35 +28,9 @@ namespace RestfulBooker.ApiTests
 
         private RestRequest _request = new RestRequest();
 
-        //public async Task<BookingResponse> CreateBooking(string firstName, string lastName, int totalPrice, bool depositPaid, string checkIn, string checkOut, string additionalNeeds)
-        //{
-        //    var bookingDates = new BookingDates
-        //    {
-        //        CheckIn = checkIn,
-        //        CheckOut = checkOut
-        //    };
-
-        //    var bookingRequest = new BookingModel
-        //    {
-        //        FirstName = firstName,
-        //        LastName = lastName,
-        //        TotalPrice = totalPrice,
-        //        DepositPaid = depositPaid,
-        //        BookingDates = bookingDates,
-        //        AdditionalNeeds = additionalNeeds
-        //    };
-
-        //    _requestPost.PostBookingRequest(bookingRequest);
-
-        //    var response = await _client.ExecuteAsync<BookingResponse>(_requestPost);
-        //    var result = JsonSerializer.Deserialize<BookingResponse>(response.Content);
-
-        //    return result;
-        //}
-
-        public async Task<IEnumerable<BookingResponse>> CreateBookings(IEnumerable<BookingModel> bookingModels)
+        public async IAsyncEnumerable<BookingResponse> CreateBookings(IEnumerable<BookingModel> bookingModels)
         {
-            IList<BookingResponse> bookingResponses = new List<BookingResponse>();
+            //IList<BookingResponse> bookingResponses = new List<BookingResponse>();
             int iterator = 0;
 
             foreach (var booking in bookingModels)
@@ -62,11 +39,11 @@ namespace RestfulBooker.ApiTests
                 _requestPost.PostBookingRequest(booking);
                 var response = await _client.ExecuteAsync<BookingResponse>(_requestPost);
                 var result = JsonSerializer.Deserialize<BookingResponse>(response.Content);
-                bookingResponses.Add(result);
                 iterator++;
+                yield return result;
             }
 
-            return bookingResponses;
+            //return bookingResponses;
         }
 
         public async Task<BookingModel> GetBookingById(int bookingId)
@@ -94,9 +71,9 @@ namespace RestfulBooker.ApiTests
         {
             request.AddAuthorizationHeader();
 
-            foreach(var id in bookingIds)
+            foreach (var id in bookingIds)
             {
-                
+
                 request.BookingByIdRequest(id, Method.DELETE);
 
                 await _client.ExecuteAsync<HttpResponse>(request);
@@ -112,12 +89,12 @@ namespace RestfulBooker.ApiTests
 
         public async Task<IEnumerable<BookingIdsResponse>> GetBookingIdsByQueryFilters(string filter1, string filter2)
         {
-            
+
 
             string pattern = @"^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$";
             var regex = new Regex(pattern);
             if ((regex.IsMatch(filter1) && regex.IsMatch(filter2)) || (regex.IsMatch(filter1) ^ regex.IsMatch(filter2)))
-            { 
+            {
                 _requestGetBooking.GetBookingByCheckinAndCheckoutRequest(filter1, filter2);
             }
             else
@@ -151,6 +128,83 @@ namespace RestfulBooker.ApiTests
             return result;
         }
 
-        
+        public IEnumerable<BookingModel> TransformToBookingModelWithoutExcludedRow(string excludedRow, Table table)
+        {
+            return excludedRow switch
+            {
+                "FirstName" => table.Rows
+                                       .Select(r => new BookingModel
+                                       {
+                                           LastName = r["LastName"],
+                                           TotalPrice = int.Parse(r["TotalPrice"]),
+                                           DepositPaid = bool.Parse(r["DepositPaid"]),
+                                           BookingDates = GetBookingDates(r["BookingDates"]),
+                                           AdditionalNeeds = r["AdditionalNeeds"]
+                                       }).ToList(),
+                "LastName" => table.Rows
+                                    .Select(r => new BookingModel
+                                    {
+                                        FirstName = r["FirstName"],
+                                        TotalPrice = int.Parse(r["TotalPrice"]),
+                                        DepositPaid = bool.Parse(r["DepositPaid"]),
+                                        BookingDates = GetBookingDates(r["BookingDates"]),
+                                        AdditionalNeeds = r["AdditionalNeeds"]
+                                    }).ToList(),
+                "BookingDates" => table.Rows
+                                    .Select(r => new BookingModel
+                                    {
+                                        FirstName = r["FirstName"],
+                                        LastName = r["LastName"],
+                                        TotalPrice = int.Parse(r["TotalPrice"]),
+                                        DepositPaid = bool.Parse(r["DepositPaid"]),
+                                        AdditionalNeeds = r["AdditionalNeeds"]
+                                    }).ToList(),
+                "AdditionalNeeds" => table.Rows
+                                       .Select(r => new BookingModel
+                                       {
+                                           FirstName = r["FirstName"],
+                                           LastName = r["LastName"],
+                                           TotalPrice = int.Parse(r["TotalPrice"]),
+                                           DepositPaid = bool.Parse(r["DepositPaid"]),
+                                           BookingDates = GetBookingDates(r["BookingDates"]),
+                                       }).ToList(),
+                "TotalPrice" => table.Rows
+                                    .Select(r => new BookingModel
+                                    {
+                                        FirstName = r["FirstName"],
+                                        LastName = r["LastName"],
+                                        DepositPaid = bool.Parse(r["DepositPaid"]),
+                                        BookingDates = GetBookingDates(r["BookingDates"]),
+                                        AdditionalNeeds = r["AdditionalNeeds"]
+                                    }).ToList(),
+                "DepositPaid" => table.Rows
+                                    .Select(r => new BookingModel
+                                    {
+                                        FirstName = r["FirstName"],
+                                        LastName = r["LastName"],
+                                        TotalPrice = int.Parse(r["TotalPrice"]),
+                                        BookingDates = GetBookingDates(r["BookingDates"]),
+                                        AdditionalNeeds = r["AdditionalNeeds"]
+                                    }).ToList(),
+                _ => throw new ArgumentOutOfRangeException(excludedRow)
+            };
+        }
+
+        protected static BookingDates GetBookingDates(string bookingDates, string part = null)
+        {
+            var parts = bookingDates.Split('/').Select(p => p.Trim()).ToList();
+            var format = "yyyy-MM-dd";
+
+            return new BookingDates()
+            {
+                CheckIn = ParseDateTimeFromString(parts.First(), format),
+                CheckOut = ParseDateTimeFromString(parts.Last(), format)
+            };
+        }
+
+        private static DateTime ParseDateTimeFromString(string str, string format)
+        {
+            return DateTime.ParseExact(str, format, CultureInfo.InvariantCulture);
+        }
     }
 }
