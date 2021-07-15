@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Text.Json;
 using System.Threading.Tasks;
 using TechTalk.SpecFlow;
 
@@ -53,6 +54,22 @@ namespace RestfulBooker.ApiTests.Steps
             _scenarioContext.SetExpectedBookings(bookingModels);
 
             _scenarioContext.SetBookingsIds(bookingsIds);
+        }
+
+        [When(@"GET Booking by Id request is sent")]
+        public async Task WhenGetBookingByIdRequestIsSent()
+        {
+            var bookingsIds = _scenarioContext.GetBookingsIds();
+
+            var bookingModels = new List<BookingResponse>();
+
+            await foreach (var model in GetBookingsById(bookingsIds))
+            {
+                bookingModels.Add(model);
+            }
+
+            // To do change for BookingModel type
+            // _scenarioContext.SetBookingModelResponses(bookingModels);
         }
 
         [When(@"GET Bookings Ids request is sent")]
@@ -105,6 +122,22 @@ namespace RestfulBooker.ApiTests.Steps
 
             return (ActualNumberOfBookingIds: actualNumberOfBookingIds, ExpectedNumberOfBookingIds: expectedNumberOfBookingIds,
                 ExpectedBookingIds: expectedBookingIds, BookingsIdsResponse: bookingsIdsResponse);
+        }
+
+        private async IAsyncEnumerable<BookingResponse> GetBookingsById(IEnumerable<int> bookingsIds)
+        {
+            //IList<BookingModel> bookingModels = new List<BookingModel>();
+            foreach (var id in bookingsIds)
+            {
+                _request.BookingByIdRequest(id, Method.GET);
+                var response = await _client.ExecuteAsync<BookingResponse>(_request);
+                var result = JsonSerializer.Deserialize<BookingResponse>(response.Content);
+                //bookingModels.Add(result);
+
+                yield return result;
+            }
+
+            //return bookingModels;
         }
 
         private void DisposeSpecFlowContext()

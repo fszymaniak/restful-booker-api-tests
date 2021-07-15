@@ -7,8 +7,9 @@ Given valid bookings models exist
 | Jack      | Mamoa    | 1000       | true        | 2020-08-23 / 2020-08-30 | Breakfasts      |
 | Kate      | Winslet  | 1500       | false       | 2020-09-23 / 2020-09-30 | Breakfasts      |
 When POST Bookings request is sent
-And GET Bookings Ids request is sent
+And GET Booking by Id request is sent
 Then expected bookings should exist
+And expected bookings should be valid to booking responses
 And expected bookings should return expected status code 200
 
 @GetInitialBookingIds

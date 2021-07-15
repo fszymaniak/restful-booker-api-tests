@@ -1,10 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text.Json;
-using Gherkin.Events.Args.Ast;
-using RestfulBooker.ApiTests.Configurations;
 using RestfulBooker.ApiTests.Constants;
 using RestfulBooker.ApiTests.Models;
 using RestSharp;
@@ -65,10 +61,11 @@ namespace RestfulBooker.ApiTests.Extensions
         public static void UpdateBookingByIdRequest(this RestRequest request, BookingModel bookingRequest, int bookingId, Method method)
         {
             var jsonRequest = JsonSerializer.Serialize(bookingRequest);
-            var endpointWithMethod = new Dictionary<string, Method>() { { Endpoints.GetBookingByIdEndpoint, method } };
-            request = request.Create(endpointWithMethod);
+            //var endpointWithMethod = new Dictionary<string, Method>() { { Endpoints.GetBookingByIdEndpoint, method } };
+            //request = request.Create(endpointWithMethod);
             request.SetUpRequestWithAdditionalInformation(method, Endpoints.GetBookingByIdSegment, bookingId);
             request.AddParameter(HttpHeaders.Value.ApplicationJson, jsonRequest, ParameterType.RequestBody);
+            request.AddAuthorizationHeader();
         }
 
         public static void PostBookingRequest(this RestRequest request, BookingModel bookingRequest)

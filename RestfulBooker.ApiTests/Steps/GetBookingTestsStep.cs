@@ -29,20 +29,7 @@ namespace RestfulBooker.ApiTests.Steps
             _scenarioContext.SetBookingsIds(notExistingBookingId);
         }
 
-        [When(@"GET Booking by Id request is sent")]
-        public async Task WhenGetBookingByIdRequestIsSent()
-        {
-            var bookingsIds = _scenarioContext.GetBookingsIds();
-
-            var bookingModels = new List<BookingModel>();
-
-            await foreach (var models in GetBookingsById(bookingsIds))
-            {
-                bookingModels.Add(models);
-            }
-
-            _scenarioContext.SetBookingModelResponses(bookingModels);
-        }
+        
 
         [When(@"GET Booking by Id request returns booking response")]
         public async Task WhenGetBookingByIdRequestReturnsBookingResponse()
@@ -68,23 +55,7 @@ namespace RestfulBooker.ApiTests.Steps
 
             expectedBookings.ShouldBeValid(bookingModelResponses);
         }
-
-        private async IAsyncEnumerable<BookingModel> GetBookingsById(IEnumerable<int> bookingsIds)
-        {
-            //IList<BookingModel> bookingModels = new List<BookingModel>();
-            foreach (var id in bookingsIds)
-            {
-                _request.BookingByIdRequest(id, Method.GET);
-                var response = await _client.ExecuteAsync<BookingResponse>(_request);
-                var result = JsonSerializer.Deserialize<BookingModel>(response.Content);
-                //bookingModels.Add(result);
-
-                yield return result;
-            }
-
-            //return bookingModels;
-        }
-
+        
         private async IAsyncEnumerable<IRestResponse<BookingResponse>> GetBookingsResponsesById(IEnumerable<int> bookingsIds)
         {
             //IList<IRestResponse<BookingResponse>> bookingResponse = new List<IRestResponse<BookingResponse>>();

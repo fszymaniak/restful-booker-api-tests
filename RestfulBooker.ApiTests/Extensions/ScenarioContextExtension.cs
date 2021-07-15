@@ -9,6 +9,7 @@ namespace RestfulBooker.ApiTests.Extensions
     public static class ScenarioContextExtension
     {
         private const string ExpectedBookings = nameof(ExpectedBookings);
+        private const string ExpectedUpdatedBookings = nameof(ExpectedUpdatedBookings);
         private const string BookingsIds = nameof(BookingsIds);
         private const string InitialNumberOfBookingIds = nameof(InitialNumberOfBookingIds);
         private const string BookingIdsResponses = nameof(BookingIdsResponses);
@@ -19,6 +20,11 @@ namespace RestfulBooker.ApiTests.Extensions
         public static void SetExpectedBookings(this ScenarioContext scenarioContext, IEnumerable<BookingModel> bookingModels)
         {
             scenarioContext[ExpectedBookings] = bookingModels;
+        }
+
+        public static void SetExpectedUpdatedBookings(this ScenarioContext scenarioContext, IEnumerable<BookingModel> bookingModels)
+        {
+            scenarioContext[ExpectedUpdatedBookings] = bookingModels;
         }
 
         public static void SetBookingsIds(this ScenarioContext scenarioContext, IEnumerable<int> bookingsIds)
@@ -49,6 +55,11 @@ namespace RestfulBooker.ApiTests.Extensions
         public static IEnumerable<BookingModel> GetExpectedBookings(this ScenarioContext scenarioContext)
         {
             return (IEnumerable<BookingModel>)scenarioContext[ExpectedBookings];
+        }
+
+        public static IEnumerable<BookingModel> GetExpectedUpdatedBookings(this ScenarioContext scenarioContext)
+        {
+            return (IEnumerable<BookingModel>)scenarioContext[ExpectedUpdatedBookings];
         }
 
         public static IEnumerable<int> GetBookingsIds(this ScenarioContext scenarioContext)
