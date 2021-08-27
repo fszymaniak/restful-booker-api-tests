@@ -1,6 +1,7 @@
-﻿Feature: Post Bookings endpoint tests
+﻿@GetInitialBookingIds
 
-@GetInitialBookingIds
+Feature: Post Bookings endpoint tests
+
 Scenario: Post Booking returns valid Booking when it is created
 Given valid bookings models exist
 | FirstName | LastName | TotalPrice | DepositPaid | BookingDates            | AdditionalNeeds |
@@ -12,7 +13,6 @@ Then expected bookings should exist
 And expected bookings should be valid to booking responses
 And expected bookings should return expected status code 200
 
-@GetInitialBookingIds
 Scenario Outline: Post Booking returns valid Booking without not necessary row when it is created
 Given valid bookings models without <ExcludedRow> exist
 | FirstName | LastName | TotalPrice | DepositPaid | BookingDates            | AdditionalNeeds |
@@ -28,7 +28,6 @@ Examples:
 | DepositPaid     |
 | TotalPrice      |     
 
-@GetInitialBookingIds
 Scenario Outline: Post Booking returns Internal Server Error status code when invalid Booking Model is sent
 Given invalid booking model without <ExcludedRow> exists
 | FirstName | LastName | TotalPrice | DepositPaid | BookingDates            | AdditionalNeeds |
