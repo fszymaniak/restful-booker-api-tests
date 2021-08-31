@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using TechTalk.SpecFlow;
 
@@ -20,7 +21,7 @@ namespace RestfulBooker.ApiTests.Steps
         private ScenarioContext _scenarioContext;
 
         private static readonly IDictionary<string, Method> _endpointWithMethod = new Dictionary<string, Method>() { { Endpoints.GetBookingByIdEndpoint, Method.GET } };
-        private readonly RestRequest _request = RestRequestExtension.Create(_endpointWithMethod);
+        private readonly RestRequest _request = RestRequestExtension.Create(Endpoints.GetBookingByIdEndpoint, Method.GET);
 
         public CommonTestsSteps(ScenarioContext scenarioContext)
         {
@@ -61,15 +62,16 @@ namespace RestfulBooker.ApiTests.Steps
         {
             var bookingsIds = _scenarioContext.GetBookingsIds();
 
-            var bookingModels = new List<BookingResponse>();
+            var bookingModels = new List<BookingModel>();
 
-            await foreach (var model in GetBookingsById(bookingsIds))
+            var receivedBooking = await GetBookingsById(bookingsIds.ToArray());
+
+            foreach (var model in receivedBooking)
             {
                 bookingModels.Add(model);
             }
 
-            // To do change for BookingModel type
-            // _scenarioContext.SetBookingModelResponses(bookingModels);
+            _scenarioContext.SetBookingModels(bookingModels);
         }
 
         [When(@"GET Bookings Ids request is sent")]
@@ -124,20 +126,19 @@ namespace RestfulBooker.ApiTests.Steps
                 ExpectedBookingIds: expectedBookingIds, BookingsIdsResponse: bookingsIdsResponse);
         }
 
-        private async IAsyncEnumerable<BookingResponse> GetBookingsById(IEnumerable<int> bookingsIds)
+        private async Task<IEnumerable<BookingModel>> GetBookingsById(int[] bookingsIds)
         {
-            //IList<BookingModel> bookingModels = new List<BookingModel>();
-            foreach (var id in bookingsIds)
+            IList<BookingModel> bookingModels = new List<BookingModel>();
+            for (int i = 0; i < bookingsIds.Count(); i++)
             {
-                _request.BookingByIdRequest(id, Method.GET);
+                _request.RemoveBodyParameter(i, index: 2);
+                _request.GetBookingByIdParameterRequest(bookingsIds[i]);
                 var response = await _client.ExecuteAsync<BookingResponse>(_request);
-                var result = JsonSerializer.Deserialize<BookingResponse>(response.Content);
-                //bookingModels.Add(result);
-
-                yield return result;
+                var result = JsonSerializer.Deserialize<BookingModel>(response.Content);
+                bookingModels.Add(result);
             }
 
-            //return bookingModels;
+            return bookingModels;
         }
 
         private void DisposeSpecFlowContext()

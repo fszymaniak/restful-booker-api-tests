@@ -13,8 +13,7 @@ namespace RestfulBooker.ApiTests
     public static class ApiTestBase
     {
         private static readonly RestClient Client = new RestClient(ConfigurationOptions.RestfulBookerUrl);
-        private static readonly IDictionary<string, Method> AuthorizationDictionary = new Dictionary<string, Method>(){ {Endpoints.AuthorizationEndpoint, Method.POST} };
-        private static readonly RestRequest Request = RestRequestExtension.Create(AuthorizationDictionary);
+        private static readonly RestRequest Request = RestRequestExtension.Create(Endpoints.AuthorizationEndpoint, Method.POST);
 
 
         public static string GetAuthToken()

@@ -9,7 +9,7 @@ using TechTalk.SpecFlow;
 namespace RestfulBooker.ApiTests.Transformations
 {
     [Binding]
-    public class Transformations
+    public class StepArgumentTransformations
     {
         [StepArgumentTransformation]
         public IList<BookingModel> TransformToBookingModel(Table table)

@@ -23,7 +23,7 @@ namespace RestfulBooker.ApiTests.Steps
         {
             var bookingIds = _scenarioContext.GetBookingsIds();
 
-            var bookings = new List<BookingResponse>();
+            var bookings = new List<BookingModel>();
             var updateMethod = GetUpdateMethod(method);
 
             await foreach (var booking in UpdateBookingById(updatedBookingModels, bookingIds, updateMethod))

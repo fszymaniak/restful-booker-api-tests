@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
+using RestfulBooker.ApiTests.Builders;
 using RestfulBooker.ApiTests.Constants;
 using RestfulBooker.ApiTests.Models;
 using RestSharp;
@@ -9,33 +10,27 @@ namespace RestfulBooker.ApiTests.Extensions
 {
     public static class RestRequestExtension
     {
-        public static void SetUpRequestWithAdditionalInformation(this RestRequest request, Method method, string segment, int bookingId)
+        public static void SetUpRequestWithId(this RestRequest request, string segment, int bookingId)
         {
-            request.Method = method;
             request.AddUrlSegment(segment, bookingId);
         }
 
-        public static void AddAuthorizationHeader(this RestRequest request)
+        public static RestRequest Create(string endpoint, Method method)
         {
-            var token = ApiTestBase.GetAuthToken();
-            var headerValue = $"token={token}";
-            request.AddHeader(HttpHeaders.Name.Authorization, HttpHeaders.Value.AuthorizationBasic);
-            request.AddHeader(HttpHeaders.Name.Cookie, headerValue);
-        }
+            var builder = new RestRequestBuilder();
 
-        public static RestRequest Create(this RestRequest request, IDictionary<string, Method> endpointWithMethod)
-        {
-            request = new RestRequest(endpointWithMethod.First().Key, endpointWithMethod.First().Value);
-            request.AddHeaders();
-            return request;
+            var request = builder
+                .Create()
+                .WithEndpoint(endpoint)
+                .WithMethod(method)
+                .WithHeaders();
 
-        }
+            if(NeedsAuthorization(method))
+            {
+                request.WithAuthorizationHeaders();
+            }
 
-        public static RestRequest Create(IDictionary<string, Method> endpointWithMethod)
-        {
-            var request = new RestRequest(endpointWithMethod.First().Key, endpointWithMethod.First().Value);
-            request.AddHeaders();
-            return request;
+            return request.Build();
         }
 
         public static void RemoveBodyParameter(this RestRequest request, int iterator, int index)
@@ -53,9 +48,9 @@ namespace RestfulBooker.ApiTests.Extensions
             request.AddParameter(HttpHeaders.Value.ApplicationJson, json, ParameterType.RequestBody);
         }
 
-        public static void BookingByIdRequest(this RestRequest request, int bookingId, Method method)
+        public static void BookingByIdRequest(this RestRequest request, int bookingId)
         {
-            request.SetUpRequestWithAdditionalInformation(method, Endpoints.GetBookingByIdSegment, bookingId);
+            request.SetUpRequestWithId(Endpoints.GetBookingByIdSegment, bookingId);
         }
 
         public static void UpdateBookingByIdRequest(this RestRequest request, BookingModel bookingRequest, int bookingId, Method method)
@@ -63,9 +58,9 @@ namespace RestfulBooker.ApiTests.Extensions
             var jsonRequest = JsonSerializer.Serialize(bookingRequest);
             //var endpointWithMethod = new Dictionary<string, Method>() { { Endpoints.GetBookingByIdEndpoint, method } };
             //request = request.Create(endpointWithMethod);
-            request.SetUpRequestWithAdditionalInformation(method, Endpoints.GetBookingByIdSegment, bookingId);
+            request.SetUpRequestWithId(Endpoints.GetBookingByIdSegment, bookingId);
             request.AddParameter(HttpHeaders.Value.ApplicationJson, jsonRequest, ParameterType.RequestBody);
-            request.AddAuthorizationHeader();
+            //request.AddAuthorizationHeader();
         }
 
         public static void PostBookingRequest(this RestRequest request, BookingModel bookingRequest)
@@ -87,19 +82,17 @@ namespace RestfulBooker.ApiTests.Extensions
 
         public static void GetBookingByQueryParameterRequest(this RestRequest request, string urlSegment, string query)
         {
-            request = new RestRequest(Endpoints.BookingEndpoint, Method.GET);
             request.AddQueryParameter(urlSegment, query);
+        }
+
+        public static void GetBookingByIdParameterRequest(this RestRequest request, int id)
+        {
+            request.AddUrlSegment(Endpoints.GetBookingByIdSegment, id.ToString());
         }
 
         public static string CreateBody<TBody>(object body)
         {
             return JsonSerializer.Serialize(body);
-        }
-
-        private static void AddHeaders(this RestRequest request)
-        {
-            request.AddHeader(HttpHeaders.Name.ContentType, HttpHeaders.Value.ApplicationJson);
-            request.AddHeader(HttpHeaders.Name.Accept, HttpHeaders.Value.ApplicationJson);
         }
 
         private static void SetUpFilters(this RestRequest request, string filter1, string filter2, string segment1, string segment2)
@@ -122,6 +115,12 @@ namespace RestfulBooker.ApiTests.Extensions
                 request.AddQueryParameter(segment1, filter1);
                 request.AddQueryParameter(segment2, filter2);
             }
+        }
+
+        private static bool NeedsAuthorization(Method method)
+        {
+            var methodsWithAutorization = new List<Method>() { Method.PUT, Method.PATCH, Method.DELETE };
+            return methodsWithAutorization.Contains(method);
         }
     }
 }

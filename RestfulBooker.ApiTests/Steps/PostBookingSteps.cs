@@ -1,6 +1,7 @@
 ﻿using RestfulBooker.ApiTests.Constants;
 using RestfulBooker.ApiTests.Extensions;
 using RestfulBooker.ApiTests.Models;
+using RestfulBooker.ApiTests.Transformations;
 using RestSharp;
 using System.Collections.Generic;
 using System.Text.Json;
@@ -14,8 +15,7 @@ namespace RestfulBooker.ApiTests.Steps
     {
         private ScenarioContext _scenarioContext;
 
-        private static readonly IDictionary<string, Method> _endpointWithMethod = new Dictionary<string, Method>() { { Endpoints.BookingEndpoint, Method.POST } };
-        private readonly RestRequest _request = RestRequestExtension.Create(_endpointWithMethod);
+        private readonly RestRequest _request = RestRequestExtension.Create(Endpoints.BookingEndpoint, Method.POST);
 
         public PostBookingSteps(ScenarioContext scenarioContext)
         {
@@ -31,14 +31,14 @@ namespace RestfulBooker.ApiTests.Steps
         [Given(@"valid bookings models without (.*) exist")]
         public void GivenValidBookingsModelsWithoutAdditionalNeedsExist(string excludedRow, Table bookingModels)
         {
-            var expectedBookingModels = TransformToBookingModelWithoutExcludedRow(excludedRow, bookingModels);
+            var expectedBookingModels = BookingModelTransformations.TransformToBookingModelWithoutExcludedRow(excludedRow, bookingModels);
             _scenarioContext.SetExpectedBookings(expectedBookingModels);
         }
 
         [Given(@"invalid booking model without (.*) exists")]
         public void GivenInvalidBookingModelExists(string excludedRow, Table bookingModels)
         {
-            var expectedBookingModels = TransformToBookingModelWithoutExcludedRow(excludedRow, bookingModels);
+            var expectedBookingModels = BookingModelTransformations.TransformToBookingModelWithoutExcludedRow(excludedRow, bookingModels);
             _scenarioContext.SetExpectedBookings(expectedBookingModels);
         }
 
@@ -62,7 +62,7 @@ namespace RestfulBooker.ApiTests.Steps
                 }
             }
 
-            _scenarioContext.SetRestBookingResponses(postResponses);
+            _scenarioContext.SetBookingResponses(postResponses);
             _scenarioContext.SetBookingsIds(bookingIds);
         }
     }

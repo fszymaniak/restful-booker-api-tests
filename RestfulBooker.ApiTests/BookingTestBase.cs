@@ -9,41 +9,27 @@ using RestfulBooker.ApiTests.Extensions;
 using RestfulBooker.ApiTests.Models.Responses;
 using System.Text.RegularExpressions;
 using System;
-using System.Globalization;
-using TechTalk.SpecFlow;
 
 namespace RestfulBooker.ApiTests
 {
     public abstract class BookingTestBase
     {
-        //    private static readonly IDictionary<string, Method> PostBookingEndpointDictionary = new Dictionary<string, Method>() { { Endpoints.BookingEndpoint, Method.POST } };
-        //    private static readonly IDictionary<string, Method> GetBookingEndpointDictionary = new Dictionary<string, Method>() { { Endpoints.BookingEndpoint, Method.GET } };
-        //    private static readonly IDictionary<string, Method> PutBookingEndpointDictionary = new Dictionary<string, Method>() { { Endpoints.GetBookingByIdEndpoint, Method.PUT } };
-        //    private static readonly IDictionary<string, Method> PatchBookingEndpointDictionary = new Dictionary<string, Method>() { { Endpoints.GetBookingByIdEndpoint, Method.PATCH } };
-        //    private readonly IDictionary<string, Method> _getBookingByIdEndpointDictionary = new Dictionary<string, Method>() { { Endpoints.GetBookingByIdEndpoint, Method.GET } };
-
-        private static readonly IDictionary<string, Method> PostBookingEndpointDictionary = GetEndpointDictionary(Endpoints.BookingEndpoint, Method.POST);
-        private static readonly IDictionary<string, Method> GetBookingEndpointDictionary = GetEndpointDictionary(Endpoints.BookingEndpoint, Method.GET);
-        private static readonly IDictionary<string, Method> PutBookingEndpointDictionary = GetEndpointDictionary(Endpoints.GetBookingByIdEndpoint, Method.PUT);
-        private static readonly IDictionary<string, Method> PatchBookingEndpointDictionary = GetEndpointDictionary(Endpoints.GetBookingByIdEndpoint, Method.PATCH);
-        private readonly IDictionary<string, Method> _getBookingByIdEndpointDictionary = GetEndpointDictionary(Endpoints.GetBookingByIdEndpoint, Method.GET);
-
         protected RestClient _client = RestClientExtension.CreateRestClient();
 
-        private readonly RestRequest _requestPost = CreateRequest(PostBookingEndpointDictionary);
+        private readonly RestRequest _requestPost = RestRequestExtension.Create(Endpoints.BookingEndpoint, Method.POST);
 
-        private readonly RestRequest _requestGetBooking = CreateRequest(GetBookingEndpointDictionary);
+        private readonly RestRequest _requestGetBooking = RestRequestExtension.Create(Endpoints.BookingEndpoint, Method.GET);
 
-        //private readonly RestRequest _requestPutBooking = RestRequestExtension.Create(PutBookingEndpointDictionary);
+        private readonly RestRequest _requestPutBooking = RestRequestExtension.Create(Endpoints.GetBookingByIdEndpoint, Method.PUT);
 
-        //private readonly RestRequest _requestPatchBooking = RestRequestExtension.Create(PatchBookingEndpointDictionary);
+        private readonly RestRequest _requestPatchBooking = RestRequestExtension.Create(Endpoints.GetBookingByIdEndpoint, Method.PATCH);
+
+        private readonly RestRequest _requestDeleteBooking = RestRequestExtension.Create(Endpoints.GetBookingByIdEndpoint, Method.DELETE);
 
         private RestRequest _request = new RestRequest();
 
         public async IAsyncEnumerable<BookingResponse> CreateBookings(IEnumerable<BookingModel> bookingModels)
         {
-            //IList<BookingResponse> bookingResponses = new List<BookingResponse>();
-
             for (int i = 0; i < bookingModels.Count(); i++)
             {
                 _requestPost.RemoveBodyParameter(i, index: 2);
@@ -52,14 +38,12 @@ namespace RestfulBooker.ApiTests
                 var result = JsonSerializer.Deserialize<BookingResponse>(response.Content);
                 yield return result;
             }
-
-            //return bookingResponses;
         }
 
         public async Task<BookingModel> GetBookingById(int bookingId)
         {
-            _request = RestRequestExtension.Create(_getBookingByIdEndpointDictionary);
-            _request.BookingByIdRequest(bookingId, Method.GET);
+            _request = RestRequestExtension.Create(Endpoints.GetBookingByIdEndpoint, Method.GET);
+            _request.BookingByIdRequest(bookingId);
 
             var response = await _client.ExecuteAsync<BookingResponse>(_request);
             var result = JsonSerializer.Deserialize<BookingModel>(response.Content);
@@ -67,31 +51,29 @@ namespace RestfulBooker.ApiTests
             return result;
         }
 
-        public async IAsyncEnumerable<BookingResponse> UpdateBookingById(IEnumerable<BookingModel> bookingModels, IEnumerable<int> bookingId, Method method)
+        public async IAsyncEnumerable<BookingModel> UpdateBookingById(IEnumerable<BookingModel> bookingModels, IEnumerable<int> bookingId, Method method)
         {
             _request = GetRequestForUpdateBooking(method);
 
             for (int i = 0; i < bookingModels.Count(); i++)
             {
-                _request.RemoveBodyParameter(i, index: 2);
-                _request.UpdateBookingByIdRequest(bookingModels.ToList()[i], bookingId.ToList()[i], method);
+                _requestPutBooking.RemoveBodyParameter(i, index: 2);
+                _requestPutBooking.UpdateBookingByIdRequest(bookingModels.ToList()[i], bookingId.ToList()[i], method);
                 var response = await _client.ExecuteAsync<BookingResponse>(_requestPost);
-                var result = JsonSerializer.Deserialize<BookingResponse>(response.Content);
+                var result = JsonSerializer.Deserialize<BookingModel>(response.Content);
                 yield return result;
             }
         }
 
         public async Task DeleteBookingsByIds(RestRequest request, IEnumerable<int> bookingIds)
         {
-            request.AddAuthorizationHeader();
-
             foreach (var id in bookingIds)
             {
-                request.BookingByIdRequest(id, Method.DELETE);
+                _requestDeleteBooking.BookingByIdRequest(id);
 
-                await _client.ExecuteAsync<HttpResponse>(request);
+                await _client.ExecuteAsync<HttpResponse>(_requestDeleteBooking);
 
-                request.Parameters.RemoveAt(4);
+                _requestDeleteBooking.Parameters.RemoveAt(4);
             }
         }
 
@@ -131,7 +113,7 @@ namespace RestfulBooker.ApiTests
 
         public async Task<IEnumerable<BookingIdsResponse>> GetBookingIdsByQueryParameter(string parameterName, string parameterValue)
         {
-            _request.GetBookingByQueryParameterRequest(parameterName, parameterValue);
+            _requestGetBooking.GetBookingByQueryParameterRequest(parameterName, parameterValue);
 
             var response = await _client.ExecuteAsync<BookingIdsResponse>(_request);
             var result = JsonSerializer.Deserialize<IEnumerable<BookingIdsResponse>>(response.Content);
@@ -139,103 +121,14 @@ namespace RestfulBooker.ApiTests
             return result;
         }
 
-        public IEnumerable<BookingModel> TransformToBookingModelWithoutExcludedRow(string excludedRow, Table table)
-        {
-            return excludedRow switch
-            {
-                "FirstName" => table.Rows
-                                       .Select(r => new BookingModel
-                                       {
-                                           LastName = r["LastName"],
-                                           TotalPrice = int.Parse(r["TotalPrice"]),
-                                           DepositPaid = bool.Parse(r["DepositPaid"]),
-                                           BookingDates = GetBookingDates(r["BookingDates"]),
-                                           AdditionalNeeds = r["AdditionalNeeds"]
-                                       }).ToList(),
-                "LastName" => table.Rows
-                                    .Select(r => new BookingModel
-                                    {
-                                        FirstName = r["FirstName"],
-                                        TotalPrice = int.Parse(r["TotalPrice"]),
-                                        DepositPaid = bool.Parse(r["DepositPaid"]),
-                                        BookingDates = GetBookingDates(r["BookingDates"]),
-                                        AdditionalNeeds = r["AdditionalNeeds"]
-                                    }).ToList(),
-                "BookingDates" => table.Rows
-                                    .Select(r => new BookingModel
-                                    {
-                                        FirstName = r["FirstName"],
-                                        LastName = r["LastName"],
-                                        TotalPrice = int.Parse(r["TotalPrice"]),
-                                        DepositPaid = bool.Parse(r["DepositPaid"]),
-                                        AdditionalNeeds = r["AdditionalNeeds"]
-                                    }).ToList(),
-                "AdditionalNeeds" => table.Rows
-                                       .Select(r => new BookingModel
-                                       {
-                                           FirstName = r["FirstName"],
-                                           LastName = r["LastName"],
-                                           TotalPrice = int.Parse(r["TotalPrice"]),
-                                           DepositPaid = bool.Parse(r["DepositPaid"]),
-                                           BookingDates = GetBookingDates(r["BookingDates"]),
-                                       }).ToList(),
-                "TotalPrice" => table.Rows
-                                    .Select(r => new BookingModel
-                                    {
-                                        FirstName = r["FirstName"],
-                                        LastName = r["LastName"],
-                                        DepositPaid = bool.Parse(r["DepositPaid"]),
-                                        BookingDates = GetBookingDates(r["BookingDates"]),
-                                        AdditionalNeeds = r["AdditionalNeeds"]
-                                    }).ToList(),
-                "DepositPaid" => table.Rows
-                                    .Select(r => new BookingModel
-                                    {
-                                        FirstName = r["FirstName"],
-                                        LastName = r["LastName"],
-                                        TotalPrice = int.Parse(r["TotalPrice"]),
-                                        BookingDates = GetBookingDates(r["BookingDates"]),
-                                        AdditionalNeeds = r["AdditionalNeeds"]
-                                    }).ToList(),
-                _ => throw new ArgumentOutOfRangeException(excludedRow)
-            };
-        }
-
-        protected static BookingDates GetBookingDates(string bookingDates, string part = null)
-        {
-            var parts = bookingDates.Split('/').Select(p => p.Trim()).ToList();
-            var format = "yyyy-MM-dd";
-
-            return new BookingDates()
-            {
-                CheckIn = ParseDateTimeFromString(parts.First(), format),
-                CheckOut = ParseDateTimeFromString(parts.Last(), format)
-            };
-        }
-
-        private static DateTime ParseDateTimeFromString(string str, string format)
-        {
-            return DateTime.ParseExact(str, format, CultureInfo.InvariantCulture);
-        }
-
         private static RestRequest GetRequestForUpdateBooking(Method method)
         {
             return method switch
             {
-                Method.PUT => RestRequestExtension.Create(PutBookingEndpointDictionary),
-                Method.PATCH => RestRequestExtension.Create(PatchBookingEndpointDictionary),
+                Method.PUT => RestRequestExtension.Create(Endpoints.GetBookingByIdEndpoint, Method.PUT),
+                Method.PATCH => RestRequestExtension.Create(Endpoints.GetBookingByIdEndpoint, Method.PATCH),
                 _ => throw new ArgumentOutOfRangeException(method.ToString())
             };
-        }
-
-        private static Dictionary<string, Method> GetEndpointDictionary(string endpoint, Method method)
-        {
-            return new Dictionary<string, Method>() { { endpoint, method } };
-        }
-
-        private static RestRequest CreateRequest(IDictionary<string, Method> dictionary)
-        {
-            return RestRequestExtension.Create(dictionary);
         }
     }
 }

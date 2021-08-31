@@ -14,8 +14,7 @@ namespace RestfulBooker.ApiTests.Steps
     [Binding]
     public class GetBookingTestsStep : BookingTestBase
     {
-        private static readonly IDictionary<string, Method> _endpointWithMethod = new Dictionary<string, Method>() { { Endpoints.GetBookingByIdEndpoint, Method.GET } };
-        private readonly RestRequest _request = RestRequestExtension.Create(_endpointWithMethod);
+        private readonly RestRequest _request = RestRequestExtension.Create(Endpoints.GetBookingByIdEndpoint, Method.GET);
         private readonly ScenarioContext _scenarioContext;
 
         public GetBookingTestsStep(ScenarioContext scenarioContext)
@@ -29,8 +28,6 @@ namespace RestfulBooker.ApiTests.Steps
             _scenarioContext.SetBookingsIds(notExistingBookingId);
         }
 
-        
-
         [When(@"GET Booking by Id request returns booking response")]
         public async Task WhenGetBookingByIdRequestReturnsBookingResponse()
         {
@@ -43,13 +40,13 @@ namespace RestfulBooker.ApiTests.Steps
                 bookingResponses.Add(bookingResponse);
             }
 
-            _scenarioContext.SetRestBookingResponses(bookingResponses);
+            _scenarioContext.SetBookingResponses(bookingResponses);
         }
 
         [Then(@"expected bookings should be valid to booking responses")]
         public void ThenExpectedBookingsShouldBeValidToBookingResponses()
         {
-            var bookingModelResponses = _scenarioContext.GetBookingModelResponses();
+            var bookingModelResponses = _scenarioContext.GetBookingModels();
 
             var expectedBookings = _scenarioContext.GetExpectedBookings();
 
@@ -61,7 +58,7 @@ namespace RestfulBooker.ApiTests.Steps
             //IList<IRestResponse<BookingResponse>> bookingResponse = new List<IRestResponse<BookingResponse>>();
             foreach (var id in bookingsIds)
             {
-                _request.BookingByIdRequest(id, Method.GET);
+                _request.BookingByIdRequest(id);
                 var response = await _client.ExecuteAsync<BookingResponse>(_request);
                 //bookingResponse.Add(response);
                 yield return response;

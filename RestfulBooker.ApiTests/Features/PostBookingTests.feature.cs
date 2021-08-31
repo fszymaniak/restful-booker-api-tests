@@ -21,12 +21,14 @@ namespace RestfulBooker.ApiTests.Features
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
     [NUnit.Framework.DescriptionAttribute("Post Bookings endpoint tests")]
+    [NUnit.Framework.CategoryAttribute("GetInitialBookingIds")]
     public partial class PostBookingsEndpointTestsFeature
     {
         
         private TechTalk.SpecFlow.ITestRunner testRunner;
         
-        private string[] _featureTags = ((string[])(null));
+        private string[] _featureTags = new string[] {
+                "GetInitialBookingIds"};
         
 #line 1 "PostBookingTests.feature"
 #line hidden
@@ -35,7 +37,8 @@ namespace RestfulBooker.ApiTests.Features
         public virtual void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features", "Post Bookings endpoint tests", null, ProgrammingLanguage.CSharp, ((string[])(null)));
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features", "Post Bookings endpoint tests", null, ProgrammingLanguage.CSharp, new string[] {
+                        "GetInitialBookingIds"});
             testRunner.OnFeatureStart(featureInfo);
         }
         
@@ -75,14 +78,12 @@ namespace RestfulBooker.ApiTests.Features
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Post Booking returns valid Booking when it is created")]
-        [NUnit.Framework.CategoryAttribute("GetInitialBookingIds")]
         public virtual void PostBookingReturnsValidBookingWhenItIsCreated()
         {
-            string[] tagsOfScenario = new string[] {
-                    "GetInitialBookingIds"};
+            string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Post Booking returns valid Booking when it is created", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 4
+#line 5
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -123,20 +124,17 @@ this.ScenarioInitialize(scenarioInfo);
                             "false",
                             "2020-09-23 / 2020-09-30",
                             "Breakfasts"});
-#line 5
+#line 6
 testRunner.Given("valid bookings models exist", ((string)(null)), table7, "Given ");
 #line hidden
-#line 9
+#line 10
 testRunner.When("POST Bookings request is sent", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 10
+#line 11
 testRunner.And("GET Booking by Id request is sent", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 11
-testRunner.Then("expected bookings should exist", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-#line hidden
 #line 12
-testRunner.And("expected bookings should be valid to booking responses", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+testRunner.Then("expected bookings should be valid to booking responses", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
 #line 13
 testRunner.And("expected bookings should return expected status code 200", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -147,23 +145,16 @@ testRunner.And("expected bookings should return expected status code 200", ((str
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Post Booking returns valid Booking without not necessary row when it is created")]
-        [NUnit.Framework.CategoryAttribute("GetInitialBookingIds")]
         [NUnit.Framework.TestCaseAttribute("AdditionalNeeds", null)]
         [NUnit.Framework.TestCaseAttribute("DepositPaid", null)]
         [NUnit.Framework.TestCaseAttribute("TotalPrice", null)]
         public virtual void PostBookingReturnsValidBookingWithoutNotNecessaryRowWhenItIsCreated(string excludedRow, string[] exampleTags)
         {
-            string[] @__tags = new string[] {
-                    "GetInitialBookingIds"};
-            if ((exampleTags != null))
-            {
-                @__tags = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Concat(@__tags, exampleTags));
-            }
-            string[] tagsOfScenario = @__tags;
+            string[] tagsOfScenario = exampleTags;
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             argumentsOfScenario.Add("ExcludedRow", excludedRow);
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Post Booking returns valid Booking without not necessary row when it is created", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 16
+#line 15
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -204,19 +195,19 @@ this.ScenarioInitialize(scenarioInfo);
                             "false",
                             "2020-09-23 / 2020-09-30",
                             "Breakfasts"});
-#line 17
+#line 16
 testRunner.Given(string.Format("valid bookings models without {0} exist", excludedRow), ((string)(null)), table8, "Given ");
 #line hidden
-#line 21
+#line 20
 testRunner.When("POST Bookings request is sent", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 22
+#line 21
 testRunner.And("GET Bookings Ids request is sent", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 23
+#line 22
 testRunner.Then("expected bookings should exist", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 24
+#line 23
 testRunner.And("expected bookings should return expected status code 200", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }
@@ -226,24 +217,17 @@ testRunner.And("expected bookings should return expected status code 200", ((str
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Post Booking returns Internal Server Error status code when invalid Booking Model" +
             " is sent")]
-        [NUnit.Framework.CategoryAttribute("GetInitialBookingIds")]
         [NUnit.Framework.TestCaseAttribute("FirstName", null)]
         [NUnit.Framework.TestCaseAttribute("LastName", null)]
         [NUnit.Framework.TestCaseAttribute("BookingDates", null)]
         public virtual void PostBookingReturnsInternalServerErrorStatusCodeWhenInvalidBookingModelIsSent(string excludedRow, string[] exampleTags)
         {
-            string[] @__tags = new string[] {
-                    "GetInitialBookingIds"};
-            if ((exampleTags != null))
-            {
-                @__tags = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Concat(@__tags, exampleTags));
-            }
-            string[] tagsOfScenario = @__tags;
+            string[] tagsOfScenario = exampleTags;
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             argumentsOfScenario.Add("ExcludedRow", excludedRow);
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Post Booking returns Internal Server Error status code when invalid Booking Model" +
                     " is sent", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 32
+#line 30
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -277,16 +261,16 @@ this.ScenarioInitialize(scenarioInfo);
                             "true",
                             "2020-08-23 / 2020-08-30",
                             "Breakfasts"});
-#line 33
+#line 31
 testRunner.Given(string.Format("invalid booking model without {0} exists", excludedRow), ((string)(null)), table9, "Given ");
 #line hidden
-#line 36
+#line 34
 testRunner.When("POST Bookings request is sent", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 37
+#line 35
 testRunner.Then("expected bookings should return expected status code 500", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 38
+#line 36
 testRunner.And("bookings should not exist", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }

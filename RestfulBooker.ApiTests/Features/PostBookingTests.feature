@@ -9,8 +9,7 @@ Given valid bookings models exist
 | Kate      | Winslet  | 1500       | false       | 2020-09-23 / 2020-09-30 | Breakfasts      |
 When POST Bookings request is sent
 And GET Booking by Id request is sent
-Then expected bookings should exist
-And expected bookings should be valid to booking responses
+Then expected bookings should be valid to booking responses
 And expected bookings should return expected status code 200
 
 Scenario Outline: Post Booking returns valid Booking without not necessary row when it is created
