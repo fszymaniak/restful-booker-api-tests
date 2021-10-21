@@ -5,6 +5,7 @@ using TechTalk.SpecFlow;
 using RestSharp;
 using System.Threading.Tasks;
 using System;
+using RestfulBooker.ApiTests.Transformations;
 
 namespace RestfulBooker.ApiTests.Steps
 {
@@ -14,7 +15,7 @@ namespace RestfulBooker.ApiTests.Steps
         private readonly ScenarioContext _scenarioContext; 
 
         public PutBookingSteps(ScenarioContext scenarioContext)
-        {
+        { 
             _scenarioContext = scenarioContext;
         }
 
@@ -23,15 +24,21 @@ namespace RestfulBooker.ApiTests.Steps
         {
             var bookingIds = _scenarioContext.GetBookingsIds();
 
-            var bookings = new List<BookingModel>();
             var updateMethod = GetUpdateMethod(method);
+            await UpdateBookingById(updatedBookingModels, bookingIds, updateMethod);
 
-            await foreach (var booking in UpdateBookingById(updatedBookingModels, bookingIds, updateMethod))
-            {
-                bookings.Add(booking);
-            }
+            _scenarioContext.SetBookingModels(updatedBookingModels);
+        }
 
-            _scenarioContext.SetExpectedUpdatedBookings(updatedBookingModels);
+        [When(@"PUT Bookings request with invalid data without (.*) is sent")]
+        public async Task WhenPutBookingsRequestWithInvalidDataIsSent(string excludedRow, Table bookingModelsTable)
+        {
+            var bookingModels = BookingModelTransformations.TransformToBookingModelWithoutExcludedRow(excludedRow, bookingModelsTable);
+            var bookingIds = _scenarioContext.GetBookingsIds();
+
+            var putBookingsResponses = await UpdateBookingByIdResponse(bookingModels, bookingIds, Method.PUT);
+
+            _scenarioContext.SetBookingResponses(putBookingsResponses);
         }
 
         private Method GetUpdateMethod(string method)
@@ -43,7 +50,5 @@ namespace RestfulBooker.ApiTests.Steps
                 _ => throw new ArgumentOutOfRangeException(method)
             };
         }
-
-
     }
 }

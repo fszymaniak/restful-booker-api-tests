@@ -1,4 +1,5 @@
-﻿Feature: GetBooking endpoint tests
+﻿@TestDataCleanup
+Feature: GetBooking endpoint tests
 
 Scenario: Get Booking returns valid Booking when Id exists
 Given bookings exist

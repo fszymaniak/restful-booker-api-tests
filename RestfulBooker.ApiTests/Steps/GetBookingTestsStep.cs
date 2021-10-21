@@ -15,7 +15,7 @@ namespace RestfulBooker.ApiTests.Steps
     public class GetBookingTestsStep : BookingTestBase
     {
         private readonly RestRequest _request = RestRequestExtension.Create(Endpoints.GetBookingByIdEndpoint, Method.GET);
-        private readonly ScenarioContext _scenarioContext;
+        protected readonly ScenarioContext _scenarioContext;
 
         public GetBookingTestsStep(ScenarioContext scenarioContext)
         {

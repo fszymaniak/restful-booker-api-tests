@@ -53,17 +53,14 @@ namespace RestfulBooker.ApiTests.Extensions
             request.SetUpRequestWithId(Endpoints.GetBookingByIdSegment, bookingId);
         }
 
-        public static void UpdateBookingByIdRequest(this RestRequest request, BookingModel bookingRequest, int bookingId, Method method)
+        public static void UpdateBookingByIdRequest(this RestRequest request, object bookingRequest, int bookingId, Method method)
         {
             var jsonRequest = JsonSerializer.Serialize(bookingRequest);
-            //var endpointWithMethod = new Dictionary<string, Method>() { { Endpoints.GetBookingByIdEndpoint, method } };
-            //request = request.Create(endpointWithMethod);
             request.SetUpRequestWithId(Endpoints.GetBookingByIdSegment, bookingId);
             request.AddParameter(HttpHeaders.Value.ApplicationJson, jsonRequest, ParameterType.RequestBody);
-            //request.AddAuthorizationHeader();
         }
 
-        public static void PostBookingRequest(this RestRequest request, BookingModel bookingRequest)
+        public static void PostBookingRequest(this RestRequest request, object bookingRequest)
         {
             var jsonRequest = JsonSerializer.Serialize(bookingRequest);
 

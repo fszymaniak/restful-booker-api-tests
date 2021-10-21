@@ -4,12 +4,10 @@ using RestfulBooker.ApiTests.Extensions;
 using RestfulBooker.ApiTests.Models;
 using RestfulBooker.ApiTests.Models.Responses;
 using RestSharp;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text.Json;
-using System.Threading;
 using System.Threading.Tasks;
 using TechTalk.SpecFlow;
 
@@ -20,22 +18,12 @@ namespace RestfulBooker.ApiTests.Steps
     {
         private ScenarioContext _scenarioContext;
 
-        private static readonly IDictionary<string, Method> _endpointWithMethod = new Dictionary<string, Method>() { { Endpoints.GetBookingByIdEndpoint, Method.GET } };
+        //private static readonly IDictionary<string, Method> _endpointWithMethod = new Dictionary<string, Method>() { { Endpoints.GetBookingByIdEndpoint, Method.GET } };
         private readonly RestRequest _request = RestRequestExtension.Create(Endpoints.GetBookingByIdEndpoint, Method.GET);
 
         public CommonTestsSteps(ScenarioContext scenarioContext)
         {
             _scenarioContext = scenarioContext;
-        }
-
-        [AfterScenario]
-        private async Task CleanUp()
-        {
-            var bookingsIds = _scenarioContext.GetBookingsIds();
-
-            await DeleteBookingsByIds(_request, bookingsIds);
-
-            DisposeSpecFlowContext();
         }
 
         [Given(@"bookings exist")]
@@ -57,7 +45,7 @@ namespace RestfulBooker.ApiTests.Steps
             _scenarioContext.SetBookingsIds(bookingsIds);
         }
 
-        [When(@"GET Booking by Id request is sent")]
+        [StepDefinition(@"GET Booking by Id request is sent")]
         public async Task WhenGetBookingByIdRequestIsSent()
         {
             var bookingsIds = _scenarioContext.GetBookingsIds();
@@ -74,14 +62,32 @@ namespace RestfulBooker.ApiTests.Steps
             _scenarioContext.SetBookingModels(bookingModels);
         }
 
-        [When(@"GET Bookings Ids request is sent")]
-        [Then(@"GET Bookings Ids request is sent")]
+        [StepDefinition(@"GET Bookings Ids request is sent")]
         public async Task WhenGETBookingsIdsRequestIsSent()
         {
             var bookingsIdsResponse = await GetBookingIds();
 
             _scenarioContext.SetBookingIdsResponses(bookingsIdsResponse);
         }
+
+        [Then(@"bookings should not be updated")]
+        public void ThenBookingsShouldNotBeUpdated()
+        {
+            var expectedBookingModels = _scenarioContext.GetExpectedBookings();
+            var actualBookingModels = _scenarioContext.GetBookingModels();
+
+            actualBookingModels.ShouldBeValid(expectedBookingModels);
+        }
+
+        [Then(@"objects should not be updated")]
+        public void ThenObjectsShouldNotBeUpdated()
+        {
+            var expectedBookingModels = _scenarioContext.GetExpectedObjects();
+            var actualBookingModels = _scenarioContext.GetExpectedObjects();
+
+            actualBookingModels.ShouldBeValid(expectedBookingModels);
+        }
+
 
         [Then(@"expected bookings should exist")]
         public void ThenExpectedBookingsShouldExists()
@@ -139,18 +145,6 @@ namespace RestfulBooker.ApiTests.Steps
             }
 
             return bookingModels;
-        }
-
-        private void DisposeSpecFlowContext()
-        {
-            try
-            {
-                var disposableContext = _scenarioContext as IDisposable;
-                disposableContext.Dispose();
-            }
-            catch
-            {
-            }
         }
     }
 }

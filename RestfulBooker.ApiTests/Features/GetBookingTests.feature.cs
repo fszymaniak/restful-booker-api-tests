@@ -21,12 +21,14 @@ namespace RestfulBooker.ApiTests.Features
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
     [NUnit.Framework.DescriptionAttribute("GetBooking endpoint tests")]
+    [NUnit.Framework.CategoryAttribute("TestDataCleanup")]
     public partial class GetBookingEndpointTestsFeature
     {
         
         private TechTalk.SpecFlow.ITestRunner testRunner;
         
-        private string[] _featureTags = ((string[])(null));
+        private string[] _featureTags = new string[] {
+                "TestDataCleanup"};
         
 #line 1 "GetBookingTests.feature"
 #line hidden
@@ -35,7 +37,8 @@ namespace RestfulBooker.ApiTests.Features
         public virtual void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features", "GetBooking endpoint tests", null, ProgrammingLanguage.CSharp, ((string[])(null)));
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features", "GetBooking endpoint tests", null, ProgrammingLanguage.CSharp, new string[] {
+                        "TestDataCleanup"});
             testRunner.OnFeatureStart(featureInfo);
         }
         
@@ -80,7 +83,7 @@ namespace RestfulBooker.ApiTests.Features
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Get Booking returns valid Booking when Id exists", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 3
+#line 4
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -121,13 +124,13 @@ this.ScenarioInitialize(scenarioInfo);
                             "false",
                             "2020-09-23 / 2020-09-30",
                             "Breakfasts"});
-#line 4
+#line 5
 testRunner.Given("bookings exist", ((string)(null)), table4, "Given ");
 #line hidden
-#line 8
+#line 9
 testRunner.When("GET Booking by Id request is sent", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 9
+#line 10
 testRunner.Then("expected bookings should be valid to booking responses", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
@@ -141,7 +144,7 @@ testRunner.Then("expected bookings should be valid to booking responses", ((stri
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Get Booking returns status code 200 (OK) when Id exists", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 11
+#line 12
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -182,13 +185,13 @@ this.ScenarioInitialize(scenarioInfo);
                             "false",
                             "2020-11-23 / 2020-12-06",
                             "Dinners"});
-#line 12
+#line 13
 testRunner.Given("bookings exist", ((string)(null)), table5, "Given ");
 #line hidden
-#line 16
+#line 17
 testRunner.When("GET Booking by Id request returns booking response", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 17
+#line 18
 testRunner.Then("expected bookings should return expected status code 200", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
@@ -202,7 +205,7 @@ testRunner.Then("expected bookings should return expected status code 200", ((st
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Get Booking returns status code 404 (Not Found) when Id not exists", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 19
+#line 20
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -230,13 +233,13 @@ this.ScenarioInitialize(scenarioInfo);
                             "-1"});
                 table6.AddRow(new string[] {
                             "100000"});
-#line 20
+#line 21
 testRunner.Given("not existing bookings", ((string)(null)), table6, "Given ");
 #line hidden
-#line 25
+#line 26
 testRunner.When("GET Booking by Id request returns booking response", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 26
+#line 27
 testRunner.Then("expected bookings should return expected status code 404", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }

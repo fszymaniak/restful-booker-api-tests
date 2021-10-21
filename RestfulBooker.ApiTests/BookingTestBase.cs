@@ -9,10 +9,12 @@ using RestfulBooker.ApiTests.Extensions;
 using RestfulBooker.ApiTests.Models.Responses;
 using System.Text.RegularExpressions;
 using System;
+using TechTalk.SpecFlow;
 
 namespace RestfulBooker.ApiTests
 {
-    public abstract class BookingTestBase
+    [Binding]
+    public class BookingTestBase
     {
         protected RestClient _client = RestClientExtension.CreateRestClient();
 
@@ -51,18 +53,39 @@ namespace RestfulBooker.ApiTests
             return result;
         }
 
-        public async IAsyncEnumerable<BookingModel> UpdateBookingById(IEnumerable<BookingModel> bookingModels, IEnumerable<int> bookingId, Method method)
+        public async Task<IList<BookingModel>> UpdateBookingById(IEnumerable<BookingModel> bookingModels, IEnumerable<int> bookingId, Method method)
         {
             _request = GetRequestForUpdateBooking(method);
+            var bookingResponses = new List<IRestResponse<BookingResponse>>();
+            var bookingModelResults = new List<BookingModel>();
 
             for (int i = 0; i < bookingModels.Count(); i++)
             {
-                _requestPutBooking.RemoveBodyParameter(i, index: 2);
-                _requestPutBooking.UpdateBookingByIdRequest(bookingModels.ToList()[i], bookingId.ToList()[i], method);
-                var response = await _client.ExecuteAsync<BookingResponse>(_requestPost);
+                _request.RemoveBodyParameter(i, index: 2);
+                _request.UpdateBookingByIdRequest(bookingModels.ToList()[i], bookingId.ToList()[i], method);
+                var response = await _client.ExecuteAsync<BookingResponse>(_request);
                 var result = JsonSerializer.Deserialize<BookingModel>(response.Content);
-                yield return result;
+                bookingResponses.Add(response);
+                bookingModelResults.Add(result);
             }
+
+            return bookingModelResults;
+        }
+
+        public async Task<IList<IRestResponse<BookingResponse>>> UpdateBookingByIdResponse(IEnumerable<object> bookingModels, IEnumerable<int> bookingId, Method method)
+        {
+            _request = GetRequestForUpdateBooking(method);
+            var bookingResponses = new List<IRestResponse<BookingResponse>>();
+
+            for (int i = 0; i < bookingModels.Count(); i++)
+            {
+                _request.RemoveBodyParameter(i, index: 2);
+                _request.UpdateBookingByIdRequest(bookingModels.ToList()[i], bookingId.ToList()[i], method);
+                var response = await _client.ExecuteAsync<BookingResponse>(_request);
+                bookingResponses.Add(response);
+            }
+
+            return bookingResponses;
         }
 
         public async Task DeleteBookingsByIds(RestRequest request, IEnumerable<int> bookingIds)

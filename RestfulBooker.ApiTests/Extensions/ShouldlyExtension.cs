@@ -19,6 +19,15 @@ namespace RestfulBooker.ApiTests.Extensions
                 && bModel.All(bM => bResponse.Any(bR => ModelAndResponseShouldBeValid(bM, bR)));
         }
 
+        public static bool ShouldBeValid(this IEnumerable<object> bookingModel, IEnumerable<object> bookingResponse)
+        {
+            var bModel = bookingModel.ToList();
+            var bResponse = bookingResponse.ToList();
+
+            return bModel.Count == bResponse.Count
+                && bModel.Equals(bResponse);
+        }
+
         public static bool ModelAndResponseShouldBeValid(BookingModel bM, BookingModel bR)
         {
             return bR.FirstName == bM.FirstName

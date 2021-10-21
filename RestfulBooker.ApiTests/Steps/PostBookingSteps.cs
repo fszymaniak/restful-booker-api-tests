@@ -3,6 +3,7 @@ using RestfulBooker.ApiTests.Extensions;
 using RestfulBooker.ApiTests.Models;
 using RestfulBooker.ApiTests.Transformations;
 using RestSharp;
+using System;
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -13,7 +14,7 @@ namespace RestfulBooker.ApiTests.Steps
     [Binding]
     public class PostBookingSteps : BookingTestBase
     {
-        private ScenarioContext _scenarioContext;
+        private readonly ScenarioContext _scenarioContext;
 
         private readonly RestRequest _request = RestRequestExtension.Create(Endpoints.BookingEndpoint, Method.POST);
 
@@ -32,20 +33,20 @@ namespace RestfulBooker.ApiTests.Steps
         public void GivenValidBookingsModelsWithoutAdditionalNeedsExist(string excludedRow, Table bookingModels)
         {
             var expectedBookingModels = BookingModelTransformations.TransformToBookingModelWithoutExcludedRow(excludedRow, bookingModels);
-            _scenarioContext.SetExpectedBookings(expectedBookingModels);
+            _scenarioContext.SetExpectedObjects(expectedBookingModels);
         }
 
-        [Given(@"invalid booking model without (.*) exists")]
+        [Given(@"invalid bookings models without (.*) exists")]
         public void GivenInvalidBookingModelExists(string excludedRow, Table bookingModels)
         {
             var expectedBookingModels = BookingModelTransformations.TransformToBookingModelWithoutExcludedRow(excludedRow, bookingModels);
-            _scenarioContext.SetExpectedBookings(expectedBookingModels);
+            _scenarioContext.SetExpectedObjects(expectedBookingModels);
         }
 
-        [When(@"POST Bookings request is sent")]
-        public async Task WhenPOSTBookingsRequestIsSent()
+        [When(@"POST Bookings request with (.*) object is sent")]
+        public async Task WhenPOSTBookingsRequestIsSent(string isObjectComplete)
         {
-            var bookingRequests = _scenarioContext.GetExpectedBookings();
+            var bookingRequests = GetBookingObject(isObjectComplete);
             var postResponses = new List<IRestResponse<BookingResponse>>();
             var bookingIds = new List<int>();
 
@@ -64,6 +65,16 @@ namespace RestfulBooker.ApiTests.Steps
 
             _scenarioContext.SetBookingResponses(postResponses);
             _scenarioContext.SetBookingsIds(bookingIds);
+        }
+
+        private IEnumerable<object> GetBookingObject(string isObjectComplete)
+        {
+            return isObjectComplete switch
+            {
+                "complete" => _scenarioContext.GetExpectedBookings(),
+                "incomplete" => _scenarioContext.GetExpectedObjects(),
+                _ => throw new ArgumentOutOfRangeException(isObjectComplete)
+            };
         }
     }
 }
