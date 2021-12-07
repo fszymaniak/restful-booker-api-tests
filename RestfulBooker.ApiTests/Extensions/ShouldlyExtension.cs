@@ -58,28 +58,6 @@ namespace RestfulBooker.ApiTests.Extensions
             return bookingIds.All(id => !actualBookingIds.Contains(id));
         }
 
-        public static void ShouldBeValid(this BookingModel bookingModel, BookingResponse bookingResponse)
-        {
-            bookingModel.ShouldSatisfyAllConditions(
-                () => bookingModel.FirstName.ShouldBe(bookingResponse.Booking.FirstName),
-                () => bookingModel.LastName.ShouldBe(bookingResponse.Booking.LastName),
-                () => bookingModel.DepositPaid.ShouldBe(bookingResponse.Booking.DepositPaid),
-                () => bookingModel.BookingDates.CheckIn.ShouldBe(bookingResponse.Booking.BookingDates.CheckIn),
-                () => bookingModel.BookingDates.CheckOut.ShouldBe(bookingResponse.Booking.BookingDates.CheckOut),
-                () => bookingModel.AdditionalNeeds.ShouldBe(bookingResponse.Booking.AdditionalNeeds));
-        }
-
-        public static void ShouldBeValid(this BookingResponse bookingResponse, BookingModel bookingModel)
-        {
-            bookingResponse.ShouldSatisfyAllConditions(
-                () => bookingResponse.Booking.FirstName.ShouldBe(bookingModel.FirstName),
-                () => bookingResponse.Booking.LastName.ShouldBe(bookingModel.LastName),
-                () => bookingResponse.Booking.DepositPaid.ShouldBe(bookingModel.DepositPaid),
-                () => bookingResponse.Booking.BookingDates.CheckIn.ShouldBe(bookingModel.BookingDates.CheckIn),
-                () => bookingResponse.Booking.BookingDates.CheckOut.ShouldBe(bookingModel.BookingDates.CheckOut),
-                () => bookingResponse.Booking.AdditionalNeeds.ShouldBe(bookingModel.AdditionalNeeds));
-        }
-
         public static void ShouldBeValid(this BookingModel actualBookingModel, BookingModel expectedBookingResponse)
         {
             actualBookingModel.ShouldSatisfyAllConditions(
