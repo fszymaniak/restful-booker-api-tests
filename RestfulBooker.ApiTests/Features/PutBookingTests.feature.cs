@@ -171,6 +171,7 @@ testRunner.Then("expected bookings should exist", ((string)(null)), ((TechTalk.S
         [NUnit.Framework.TestCaseAttribute("BookingDates", null)]
         [NUnit.Framework.TestCaseAttribute("TotalPrice", null)]
         [NUnit.Framework.TestCaseAttribute("DepositPaid", null)]
+        [NUnit.Framework.TestCaseAttribute("AdditionalNeeds", null)]
         public virtual void PutBookingReturnsBadRequestStatusCodeWhenIncompletedBookingModelIsSent(string excludedRow, string[] exampleTags)
         {
             string[] tagsOfScenario = exampleTags;
@@ -240,7 +241,7 @@ testRunner.Given("bookings exist", ((string)(null)), table12, "Given ");
 testRunner.When(string.Format("PUT Bookings request with invalid data without {0} is sent", excludedRow), ((string)(null)), table13, "When ");
 #line hidden
 #line 25
-testRunner.Then("expected bookings should return expected status code 400", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+testRunner.Then("actual bookings should return expected status code 400", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
 #line 26
 testRunner.And("GET Booking by Id request is sent", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");

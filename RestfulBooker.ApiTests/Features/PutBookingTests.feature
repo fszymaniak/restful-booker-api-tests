@@ -22,13 +22,14 @@ Given bookings exist
 When PUT Bookings request with invalid data without <excludedRow> is sent
 | FirstName | LastName | TotalPrice | DepositPaid | BookingDates            | AdditionalNeeds |
 | Jack      | Mamoa    | 1000       | true        | 2020-08-23 / 2020-08-30 | Breakfasts      |
-Then expected bookings should return expected status code 400
+Then actual bookings should return expected status code 400
 And GET Booking by Id request is sent
 And bookings should not be updated
 Examples: 
-| excludedRow  |
-| FirstName    |
-| LastName     |
-| BookingDates |
-| TotalPrice   |
-| DepositPaid  |
+| excludedRow     |
+| FirstName       |
+| LastName        |
+| BookingDates    |
+| TotalPrice      |
+| DepositPaid     |
+| AdditionalNeeds |

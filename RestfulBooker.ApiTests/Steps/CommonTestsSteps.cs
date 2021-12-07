@@ -108,8 +108,8 @@ namespace RestfulBooker.ApiTests.Steps
             Assert.IsTrue(numberOfookingsIds.Equals(currentNumberOfBookingIds));
         }   
 
-        [Then(@"expected bookings should return expected status code (.*)")]
-        public void ThenExpectedBookingsShouldReturnExpectedStatusCode(HttpStatusCode statusCode)
+        [Then(@"actual bookings should return expected status code (.*)")]
+        public void ThenActualBookingsShouldReturnExpectedStatusCode(HttpStatusCode statusCode)
         {
             var bookingModelResponses = _scenarioContext.GetRestBookingResponses();
 

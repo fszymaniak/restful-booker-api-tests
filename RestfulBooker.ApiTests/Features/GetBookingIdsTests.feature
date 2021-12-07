@@ -39,19 +39,3 @@ Examples:
 | notExistingFirstName | notExistingLastName |
 | notExistingFirstName | <null>              |
 | <null>               | notExistingName     |
-
-#@GetInitialBookingIds
-#Scenario Outline: Get Bookings Ids filtered by checkin and/or checkout
-#Given bookings exist
-#| FirstName | LastName   | TotalPrice | DepositPaid | BookingDates            | AdditionalNeeds |
-#| Luka      | Doncic     | 1000       | true        | 2020-07-23 / 2020-07-30 | Breakfasts      |
-#| Luka      | Doncic     | 2000       | true        | 2020-07-23 / 2020-08-30 | Lunch           |
-#| Catelyn   | Parker     | 1500       | false       | 2020-09-23 / 2020-09-30 | Breakfasts      |
-#| Adi       | McDonald   | 2500       | false       | 2020-10-23 / 2020-10-30 | Parking         |
-#When GET filtered Bookings Ids by checkin and checkout: <checkin> <checkout>
-#Then expected bookings should exist
-#Examples: 
-#| checkin    | checkout   |
-#| 2020-07-23 | 2020-07-30 |
-#| 2020-07-23 | <null>     |
-#| <null>     | 2020-10-30 |

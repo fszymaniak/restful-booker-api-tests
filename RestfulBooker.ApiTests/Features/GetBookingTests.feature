@@ -15,7 +15,7 @@ Given bookings exist
 | Phill     | Collins    | 1000       | true        | 2020-10-01 / 2020-10-30 | Breakfasts      |
 | Lebron    | James      | 1500       | false       | 2020-11-23 / 2020-12-06 | Dinners         |
 When GET Booking by Id request returns booking response
-Then expected bookings should return expected status code 200
+Then actual bookings should return expected status code 200
 
 Scenario: Get Booking returns status code 404 (Not Found) when Id not exists
 Given not existing bookings
@@ -24,4 +24,4 @@ Given not existing bookings
 | -1                     |
 | 100000                 |
 When GET Booking by Id request returns booking response
-Then expected bookings should return expected status code 404
+Then actual bookings should return expected status code 404

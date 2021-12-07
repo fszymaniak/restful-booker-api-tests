@@ -192,7 +192,7 @@ testRunner.Given("bookings exist", ((string)(null)), table5, "Given ");
 testRunner.When("GET Booking by Id request returns booking response", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 18
-testRunner.Then("expected bookings should return expected status code 200", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+testRunner.Then("actual bookings should return expected status code 200", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             this.ScenarioCleanup();
@@ -240,7 +240,7 @@ testRunner.Given("not existing bookings", ((string)(null)), table6, "Given ");
 testRunner.When("GET Booking by Id request returns booking response", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 27
-testRunner.Then("expected bookings should return expected status code 404", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+testRunner.Then("actual bookings should return expected status code 404", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             this.ScenarioCleanup();
