@@ -38,7 +38,7 @@ namespace RestfulBooker.ApiTests.Steps
 
             var putBookingsResponses = await UpdateBookingByIdResponse(bookingModels, bookingIds, Method.PUT);
 
-            _scenarioContext.SetBookingResponses(putBookingsResponses);
+            _scenarioContext.SetRestBookingResponses(putBookingsResponses);
         }
 
         private Method GetUpdateMethod(string method)

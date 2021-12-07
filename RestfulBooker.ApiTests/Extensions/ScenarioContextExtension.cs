@@ -16,6 +16,7 @@ namespace RestfulBooker.ApiTests.Extensions
         private const string BookingModels = nameof(BookingModels);
         private const string BookingResponses = nameof(BookingResponses);
         private const string ExpectedObjects = nameof(ExpectedObjects);
+        private const string ActualUpdatedBooking = nameof(ActualUpdatedBooking);
 
 
         public static void SetExpectedBookings(this ScenarioContext scenarioContext, IEnumerable<BookingModel> bookingModels)
@@ -28,9 +29,9 @@ namespace RestfulBooker.ApiTests.Extensions
             scenarioContext[ExpectedObjects] = bookingModels;
         }
 
-        public static void SetExpectedUpdatedBookings(this ScenarioContext scenarioContext, IEnumerable<BookingModel> bookingModels)
+        public static void SetActualUpdatedBooking(this ScenarioContext scenarioContext, BookingModel updatedBookingModel)
         {
-            scenarioContext[ExpectedUpdatedBookings] = bookingModels;
+            scenarioContext[ActualUpdatedBooking] = updatedBookingModel;
         }
 
         public static void SetBookingsIds(this ScenarioContext scenarioContext, IEnumerable<int> bookingsIds)
@@ -53,7 +54,7 @@ namespace RestfulBooker.ApiTests.Extensions
             scenarioContext[BookingModels] = bookingModels;
         }
 
-        public static void SetBookingResponses (this ScenarioContext scenarioContext, IEnumerable<IRestResponse<BookingResponse>> bookingResponses)
+        public static void SetRestBookingResponses (this ScenarioContext scenarioContext, IEnumerable<IRestResponse<BookingResponse>> bookingResponses)
         {
             scenarioContext[BookingResponses] = bookingResponses;
         }
@@ -96,6 +97,11 @@ namespace RestfulBooker.ApiTests.Extensions
         public static IEnumerable<BookingIdsResponse> GetBookingIdsResponses(this ScenarioContext scenarioContext)
         {
             return (IEnumerable<BookingIdsResponse>)scenarioContext[BookingIdsResponse];
+        }
+
+        public static BookingModel GetActualUpdatedBooking(this ScenarioContext scenarioContext)
+        {
+            return (BookingModel)scenarioContext[ActualUpdatedBooking];
         }
     }
 }

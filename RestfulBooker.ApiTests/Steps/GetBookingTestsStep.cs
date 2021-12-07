@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Text.Json;
 using System.Threading.Tasks;
-using NUnit.Framework;
 using RestfulBooker.ApiTests.Constants;
 using RestfulBooker.ApiTests.Extensions;
 using RestfulBooker.ApiTests.Models;
@@ -10,7 +8,6 @@ using TechTalk.SpecFlow;
 
 namespace RestfulBooker.ApiTests.Steps
 {
-    [Parallelizable(ParallelScope.Fixtures)]
     [Binding]
     public class GetBookingTestsStep : BookingTestBase
     {
@@ -40,7 +37,7 @@ namespace RestfulBooker.ApiTests.Steps
                 bookingResponses.Add(bookingResponse);
             }
 
-            _scenarioContext.SetBookingResponses(bookingResponses);
+            _scenarioContext.SetRestBookingResponses(bookingResponses);
         }
 
         [Then(@"expected bookings should be valid to booking responses")]
