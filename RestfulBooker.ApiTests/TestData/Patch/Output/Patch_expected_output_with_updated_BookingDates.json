@@ -1,0 +1,11 @@
+{
+  "firstname": "Jack",
+  "lastname": "Mamoa",
+  "totalprice": 1000,
+  "depositpaid": true,
+  "bookingdates": {
+    "checkin": "2020-09-15",
+    "checkout": "2020-09-29"
+  },
+  "additionalneeds": "Breakfasts"
+}
