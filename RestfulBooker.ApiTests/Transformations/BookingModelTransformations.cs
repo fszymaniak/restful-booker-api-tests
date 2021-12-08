@@ -71,6 +71,47 @@ namespace RestfulBooker.ApiTests.Transformations
             };
         }
 
+        //public static object TransformToSingleRequestObject(string propertyName, string propertyValue)
+        //{
+        //    return propertyName switch
+        //    {
+        //        "FirstName" => new { FirstName = propertyValue  },
+        //        "LastName" => new { LastName = propertyValue },
+        //        "BookingDates" => new { BookingDates = GetBookingDates(propertyValue) },
+        //        "AdditionalNeeds" => new { AdditionalNeeds = propertyValue },
+        //        "TotalPrice" => new { TotalPrice = int.Parse(propertyValue) },
+        //        "DepositPaid" => new { DepositPaid = bool.Parse(propertyValue) },
+        //        _ => throw new ArgumentOutOfRangeException(propertyName)
+        //    };
+        //}
+
+        //public static void ChangeExpectedBookingModel(BookingModel bookingModel, string propertyName, string propertyValue)
+        //{
+        //    switch(propertyName)
+        //    {
+        //        case "FirstName":
+        //            bookingModel.FirstName = propertyValue;
+        //            break;
+        //        case "LastName":
+        //            bookingModel.LastName = propertyValue;
+        //            break;
+        //        case "BookingDates":
+        //            bookingModel.BookingDates = GetBookingDates(propertyValue);
+        //            break;
+        //        case "AdditionalNeeds":
+        //            bookingModel.AdditionalNeeds = propertyValue;
+        //            break;
+        //        case "TotalPrice":
+        //            bookingModel.TotalPrice = int.Parse(propertyValue);
+        //            break;
+        //        case "DepositPaid":
+        //            bookingModel.DepositPaid = bool.Parse(propertyValue);
+        //            break;
+        //        default:
+        //            throw new ArgumentOutOfRangeException(propertyName);
+        //    };
+        //}
+
         private static BookingDates GetBookingDates(string bookingDates)
         {
             var parts = bookingDates.Split('/').Select(p => p.Trim()).ToList();

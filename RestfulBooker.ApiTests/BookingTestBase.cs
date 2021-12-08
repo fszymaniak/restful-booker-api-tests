@@ -10,6 +10,7 @@ using RestfulBooker.ApiTests.Models.Responses;
 using System.Text.RegularExpressions;
 using System;
 using TechTalk.SpecFlow;
+using System.IO;
 
 namespace RestfulBooker.ApiTests
 {
@@ -18,7 +19,7 @@ namespace RestfulBooker.ApiTests
     {
         protected RestClient _client = RestClientExtension.CreateRestClient();
 
-        private readonly RestRequest _requestPost = RestRequestExtension.Create(Endpoints.BookingEndpoint, Method.POST);
+        protected readonly RestRequest _requestPost = RestRequestExtension.Create(Endpoints.BookingEndpoint, Method.POST);
 
         private readonly RestRequest _requestGetBooking = RestRequestExtension.Create(Endpoints.BookingEndpoint, Method.GET);
 
@@ -142,6 +143,38 @@ namespace RestfulBooker.ApiTests
             var result = JsonSerializer.Deserialize<IEnumerable<BookingIdsResponse>>(response.Content);
 
             return result;
+        }
+
+        public static async Task<IEnumerable<BookingIdsResponse>> GetFileWithTestDataAsync(string filePath)
+        {
+            string fileContents = await File.ReadAllTextAsync(filePath);
+
+            IEnumerable<BookingIdsResponse> file = JsonSerializer.Deserialize<IEnumerable<BookingIdsResponse>>(fileContents);
+
+            if (file == null)
+            {
+                throw new ArgumentException($"Deserialization of the file at path {filePath} into {nameof(IEnumerable<BookingIdsResponse>)} failed");
+            }
+
+            return file;
+        }
+
+        public static async Task<T> LoadJsonFile<T>(string filePath)
+        {
+            string fileFromPath = await File.ReadAllTextAsync(filePath);
+            T jsonFile;
+
+            try 
+            { 
+                jsonFile = JsonSerializer.Deserialize<T>(fileFromPath);
+            }
+            catch (JsonException)
+            {
+                throw new Exception($"The deserialization of the file {filePath} failed.");
+            }
+
+            return jsonFile;
+           
         }
 
         private static RestRequest GetRequestForUpdateBooking(Method method)
