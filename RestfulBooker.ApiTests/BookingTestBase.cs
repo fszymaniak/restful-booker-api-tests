@@ -1,16 +1,26 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using RestfulBooker.ApiTests.Constants;
 using RestfulBooker.ApiTests.Models;
 using RestSharp;
-using System.Text.Json;
 using System.Threading.Tasks;
 using RestfulBooker.ApiTests.Models.Responses;
+using RestfulBooker.ApiTests.Services;
+using RestfulBooker.ApiTests.Helpers;
 
 namespace RestfulBooker.ApiTests
 {
     public abstract class BookingTestBase
     {
-        protected readonly RestClient _client = new RestClient(ApiTestBase.RestfulBookerUrl);
+        protected readonly ApiConfiguration _config;
+        protected readonly AuthenticationService _authService;
+        protected readonly RestClient _client;
+
+        protected BookingTestBase()
+        {
+            _config = new ApiConfiguration();
+            _authService = new AuthenticationService(_config.RestfulBookerUrl);
+            _client = new RestClient(_config.RestfulBookerUrl);
+        }
 
         public async Task<BookingResponse> CreateBooking(string firstName, string lastName, int totalPrice, bool depositPaid, string checkIn, string checkOut, string additionalNeeds)
         {
@@ -33,7 +43,7 @@ namespace RestfulBooker.ApiTests
             var request = PostBookingRequest(bookingRequest);
 
             var response = await _client.ExecuteAsync<BookingResponse>(request);
-            var result = JsonSerializer.Deserialize<BookingResponse>(response.Content);
+            var result = JsonHelper.Deserialize<BookingResponse>(response.Content);
 
             return result;
         }
@@ -43,7 +53,7 @@ namespace RestfulBooker.ApiTests
             var request = BookingByIdRequest(bookingId, Method.GET);
 
             var response = await _client.ExecuteAsync<BookingResponse>(request);
-            var result = JsonSerializer.Deserialize<BookingModel>(response.Content);
+            var result = JsonHelper.Deserialize<BookingModel>(response.Content);
 
             return result;
         }
@@ -53,7 +63,7 @@ namespace RestfulBooker.ApiTests
             var request = UpdateBookingByIdRequest(bookingRequest, bookingId, method);
 
             var response = await _client.ExecuteAsync<BookingResponse>(request);
-            var result = JsonSerializer.Deserialize<BookingModel>(response.Content);
+            var result = JsonHelper.Deserialize<BookingModel>(response.Content);
 
             return result;
         }
@@ -70,7 +80,7 @@ namespace RestfulBooker.ApiTests
             var request = new RestRequest(Endpoints.BookingEndpoint, Method.GET);
 
             var response = await _client.ExecuteAsync<BookingResponse>(request);
-            var result = JsonSerializer.Deserialize<IEnumerable<BookingResponse>>(response.Content);
+            var result = JsonHelper.Deserialize<IEnumerable<BookingResponse>>(response.Content);
 
             return result;
         }
@@ -80,7 +90,7 @@ namespace RestfulBooker.ApiTests
             var request = GetBookingByFirstAndLastNameRequest(firstName, lastName);
 
             var response = await _client.ExecuteAsync<BookingIdsResponse>(request);
-            var result = JsonSerializer.Deserialize<IEnumerable<BookingIdsResponse>>(response.Content);
+            var result = JsonHelper.Deserialize<IEnumerable<BookingIdsResponse>>(response.Content);
 
             return result;
         }
@@ -90,7 +100,7 @@ namespace RestfulBooker.ApiTests
             var request = GetBookingByCheckinAndCheckoutRequest(checkin, checkout);
 
             var response = await _client.ExecuteAsync<BookingIdsResponse>(request);
-            var result = JsonSerializer.Deserialize<IEnumerable<BookingIdsResponse>>(response.Content);
+            var result = JsonHelper.Deserialize<IEnumerable<BookingIdsResponse>>(response.Content);
 
             return result;
         }
@@ -100,7 +110,7 @@ namespace RestfulBooker.ApiTests
             var request = GetBookingByQueryParameterRequest(parameterName, parameterValue);
 
             var response = await _client.ExecuteAsync<BookingIdsResponse>(request);
-            var result = JsonSerializer.Deserialize<IEnumerable<BookingIdsResponse>>(response.Content);
+            var result = JsonHelper.Deserialize<IEnumerable<BookingIdsResponse>>(response.Content);
 
             return result;
         }
@@ -109,32 +119,28 @@ namespace RestfulBooker.ApiTests
         {
             var request = new RestRequest(Endpoints.GetBookingByIdEndpoint, method);
             request.AddUrlSegment(Endpoints.GetBookingByIdSegment, bookingId);
-            request.AddHeaders();
-            request.AddAuthorizationHeader();
+            request.AddStandardHeaders();
+            request.AddAuthorizationHeader(_authService);
 
             return request;
         }
 
         public RestRequest UpdateBookingByIdRequest(BookingModel bookingRequest, int bookingId, Method method)
         {
-            var jsonRequest = JsonSerializer.Serialize(bookingRequest);
-
             var request = new RestRequest(Endpoints.GetBookingByIdEndpoint, method);
             request.AddUrlSegment(Endpoints.GetBookingByIdSegment, bookingId);
-            request.AddHeaders();
-            request.AddAuthorizationHeader();
-            request.AddParameter(HttpHeaders.Value.ApplicationJson, jsonRequest, ParameterType.RequestBody);
+            request.AddStandardHeaders();
+            request.AddAuthorizationHeader(_authService);
+            request.AddJsonBody(bookingRequest);
 
             return request;
         }
 
         public RestRequest PostBookingRequest(BookingModel bookingRequest)
         {
-            var jsonRequest = JsonSerializer.Serialize(bookingRequest);
-
             var request = new RestRequest(Endpoints.BookingEndpoint, Method.POST);
-            request.AddHeaders();
-            request.AddParameter(HttpHeaders.Value.ApplicationJson, jsonRequest, ParameterType.RequestBody);
+            request.AddStandardHeaders();
+            request.AddJsonBody(bookingRequest);
 
             return request;
         }
@@ -144,7 +150,7 @@ namespace RestfulBooker.ApiTests
             var request = new RestRequest(Endpoints.BookingEndpoint, Method.GET);
             request.AddQueryParameter(Endpoints.GetBookingByFirstNameSegment, firstName);
             request.AddQueryParameter(Endpoints.GetBookingByLastNameSegment, lastName);
-            request.AddHeaders();
+            request.AddStandardHeaders();
 
             return request;
         }
@@ -154,7 +160,7 @@ namespace RestfulBooker.ApiTests
             var request = new RestRequest(Endpoints.BookingEndpoint, Method.GET);
             request.AddQueryParameter(Endpoints.GetBookingByCheckinSegment, checkin);
             request.AddQueryParameter(Endpoints.GetBookingByCheckoutSegment, checkout);
-            request.AddHeaders();
+            request.AddStandardHeaders();
 
             return request;
         }
@@ -163,7 +169,7 @@ namespace RestfulBooker.ApiTests
         {
             var request = new RestRequest(Endpoints.BookingEndpoint, Method.GET);
             request.AddQueryParameter(urlSegment, query);
-            request.AddHeaders();
+            request.AddStandardHeaders();
 
             return request;
         }
