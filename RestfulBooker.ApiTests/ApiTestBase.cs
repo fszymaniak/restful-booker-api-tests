@@ -14,7 +14,7 @@ namespace RestfulBooker.ApiTests
 {
     public static class ApiTestBase
     {
-        public static string RestfulBokerUrl => Configuration["RestfulBokerUrl"];
+        public static string RestfulBookerUrl => Configuration["RestfulBookerUrl"];
 
         public static IConfiguration Configuration { get; set; }
 
@@ -42,7 +42,7 @@ namespace RestfulBooker.ApiTests
 
         public static string GetAuthToken()
         {
-            var client = new RestClient(RestfulBokerUrl);
+            var client = new RestClient(RestfulBookerUrl);
             
             var body = new AuthorizationRequest
             {

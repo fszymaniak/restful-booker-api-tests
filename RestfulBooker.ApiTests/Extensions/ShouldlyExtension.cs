@@ -13,8 +13,8 @@ namespace RestfulBooker.ApiTests.Extensions
                 () => bookingModel.FirstName.ShouldBe(bookingResponse.Booking.FirstName),
                 () => bookingModel.LastName.ShouldBe(bookingResponse.Booking.LastName),
                 () => bookingModel.DepositPaid.ShouldBe(bookingResponse.Booking.DepositPaid),
-                () => bookingModel.BookinDates.CheckIn.ShouldBe(bookingResponse.Booking.BookinDates.CheckIn),
-                () => bookingModel.BookinDates.CheckOut.ShouldBe(bookingResponse.Booking.BookinDates.CheckOut),
+                () => bookingModel.BookingDates.CheckIn.ShouldBe(bookingResponse.Booking.BookingDates.CheckIn),
+                () => bookingModel.BookingDates.CheckOut.ShouldBe(bookingResponse.Booking.BookingDates.CheckOut),
                 () => bookingModel.AdditionalNeeds.ShouldBe(bookingResponse.Booking.AdditionalNeeds));
         }
 
@@ -24,8 +24,8 @@ namespace RestfulBooker.ApiTests.Extensions
                 () => bookingResponse.Booking.FirstName.ShouldBe(bookingModel.FirstName),
                 () => bookingResponse.Booking.LastName.ShouldBe(bookingModel.LastName),
                 () => bookingResponse.Booking.DepositPaid.ShouldBe(bookingModel.DepositPaid),
-                () => bookingResponse.Booking.BookinDates.CheckIn.ShouldBe(bookingModel.BookinDates.CheckIn),
-                () => bookingResponse.Booking.BookinDates.CheckOut.ShouldBe(bookingModel.BookinDates.CheckOut),
+                () => bookingResponse.Booking.BookingDates.CheckIn.ShouldBe(bookingModel.BookingDates.CheckIn),
+                () => bookingResponse.Booking.BookingDates.CheckOut.ShouldBe(bookingModel.BookingDates.CheckOut),
                 () => bookingResponse.Booking.AdditionalNeeds.ShouldBe(bookingModel.AdditionalNeeds));
         }
 
@@ -35,8 +35,8 @@ namespace RestfulBooker.ApiTests.Extensions
                 () => actualBookingModel.FirstName.ShouldBe(expectedBookingResponse.FirstName),
                 () => actualBookingModel.LastName.ShouldBe(expectedBookingResponse.LastName),
                 () => actualBookingModel.DepositPaid.ShouldBe(expectedBookingResponse.DepositPaid),
-                () => actualBookingModel.BookinDates.CheckIn.ShouldBe(expectedBookingResponse.BookinDates.CheckIn),
-                () => actualBookingModel.BookinDates.CheckOut.ShouldBe(expectedBookingResponse.BookinDates.CheckOut),
+                () => actualBookingModel.BookingDates.CheckIn.ShouldBe(expectedBookingResponse.BookingDates.CheckIn),
+                () => actualBookingModel.BookingDates.CheckOut.ShouldBe(expectedBookingResponse.BookingDates.CheckOut),
                 () => actualBookingModel.AdditionalNeeds.ShouldBe(expectedBookingResponse.AdditionalNeeds));
         }
     }
