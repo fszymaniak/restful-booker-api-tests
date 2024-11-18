@@ -1,11 +1,10 @@
 using System.Collections.Generic;
-using RestfulBooker.ApiTests.Constants;
 using RestfulBooker.ApiTests.Models;
 using RestSharp;
 using System.Threading.Tasks;
 using RestfulBooker.ApiTests.Models.Responses;
 using RestfulBooker.ApiTests.Services;
-using RestfulBooker.ApiTests.Helpers;
+using RestfulBooker.ApiTests.Factories;
 
 namespace RestfulBooker.ApiTests
 {
@@ -13,13 +12,15 @@ namespace RestfulBooker.ApiTests
     {
         protected readonly ApiConfiguration _config;
         protected readonly AuthenticationService _authService;
-        protected readonly RestClient _client;
+        protected readonly BookingApiClient _apiClient;
+        protected readonly BookingRequestFactory _requestFactory;
 
         protected BookingTestBase()
         {
             _config = new ApiConfiguration();
             _authService = new AuthenticationService(_config.RestfulBookerUrl);
-            _client = new RestClient(_config.RestfulBookerUrl);
+            _apiClient = new BookingApiClient(_config.RestfulBookerUrl);
+            _requestFactory = new BookingRequestFactory(_authService);
         }
 
         public async Task<BookingResponse> CreateBooking(string firstName, string lastName, int totalPrice, bool depositPaid, string checkIn, string checkOut, string additionalNeeds)
@@ -40,138 +41,50 @@ namespace RestfulBooker.ApiTests
                 AdditionalNeeds = additionalNeeds
             };
 
-            var request = PostBookingRequest(bookingRequest);
-
-            var response = await _client.ExecuteAsync<BookingResponse>(request);
-            var result = JsonHelper.Deserialize<BookingResponse>(response.Content);
-
-            return result;
+            var request = _requestFactory.CreatePostBookingRequest(bookingRequest);
+            return await _apiClient.CreateBookingAsync(request);
         }
 
         public async Task<BookingModel> GetBookingById(int bookingId)
         {
-            var request = BookingByIdRequest(bookingId, Method.GET);
-
-            var response = await _client.ExecuteAsync<BookingResponse>(request);
-            var result = JsonHelper.Deserialize<BookingModel>(response.Content);
-
-            return result;
+            var request = _requestFactory.CreateBookingByIdRequest(bookingId, Method.GET);
+            return await _apiClient.GetBookingAsync(request);
         }
 
         public async Task<BookingModel> UpdateBookingById(BookingModel bookingRequest, int bookingId, Method method)
         {
-            var request = UpdateBookingByIdRequest(bookingRequest, bookingId, method);
-
-            var response = await _client.ExecuteAsync<BookingResponse>(request);
-            var result = JsonHelper.Deserialize<BookingModel>(response.Content);
-
-            return result;
+            var request = _requestFactory.CreateUpdateBookingRequest(bookingRequest, bookingId, method);
+            return await _apiClient.UpdateBookingAsync(request);
         }
 
         public async Task DeleteBookingById(int bookingId)
         {
-            var request = BookingByIdRequest(bookingId, Method.DELETE);
-
-            await _client.ExecuteAsync<BookingResponse>(request);
+            var request = _requestFactory.CreateBookingByIdRequest(bookingId, Method.DELETE);
+            await _apiClient.DeleteBookingAsync(request);
         }
 
         public async Task<IEnumerable<BookingResponse>> GetBookingIds()
         {
-            var request = new RestRequest(Endpoints.BookingEndpoint, Method.GET);
-
-            var response = await _client.ExecuteAsync<BookingResponse>(request);
-            var result = JsonHelper.Deserialize<IEnumerable<BookingResponse>>(response.Content);
-
-            return result;
+            var request = _requestFactory.CreateGetBookingIdsRequest();
+            return await _apiClient.GetBookingIdsAsync(request);
         }
 
         public async Task<IEnumerable<BookingIdsResponse>> GetBookingIdsByFirstAndLastName(string firstName, string lastName)
         {
-            var request = GetBookingByFirstAndLastNameRequest(firstName, lastName);
-
-            var response = await _client.ExecuteAsync<BookingIdsResponse>(request);
-            var result = JsonHelper.Deserialize<IEnumerable<BookingIdsResponse>>(response.Content);
-
-            return result;
+            var request = _requestFactory.CreateGetBookingByNameRequest(firstName, lastName);
+            return await _apiClient.GetFilteredBookingIdsAsync(request);
         }
 
         public async Task<IEnumerable<BookingIdsResponse>> GetBookingIdsByCheckinAndCheckout(string checkin, string checkout)
         {
-            var request = GetBookingByCheckinAndCheckoutRequest(checkin, checkout);
-
-            var response = await _client.ExecuteAsync<BookingIdsResponse>(request);
-            var result = JsonHelper.Deserialize<IEnumerable<BookingIdsResponse>>(response.Content);
-
-            return result;
+            var request = _requestFactory.CreateGetBookingByDatesRequest(checkin, checkout);
+            return await _apiClient.GetFilteredBookingIdsAsync(request);
         }
 
         public async Task<IEnumerable<BookingIdsResponse>> GetBookingIdsByQueryParameter(string parameterName, string parameterValue)
         {
-            var request = GetBookingByQueryParameterRequest(parameterName, parameterValue);
-
-            var response = await _client.ExecuteAsync<BookingIdsResponse>(request);
-            var result = JsonHelper.Deserialize<IEnumerable<BookingIdsResponse>>(response.Content);
-
-            return result;
-        }
-
-        public RestRequest BookingByIdRequest(int bookingId, Method method)
-        {
-            var request = new RestRequest(Endpoints.GetBookingByIdEndpoint, method);
-            request.AddUrlSegment(Endpoints.GetBookingByIdSegment, bookingId);
-            request.AddStandardHeaders();
-            request.AddAuthorizationHeader(_authService);
-
-            return request;
-        }
-
-        public RestRequest UpdateBookingByIdRequest(BookingModel bookingRequest, int bookingId, Method method)
-        {
-            var request = new RestRequest(Endpoints.GetBookingByIdEndpoint, method);
-            request.AddUrlSegment(Endpoints.GetBookingByIdSegment, bookingId);
-            request.AddStandardHeaders();
-            request.AddAuthorizationHeader(_authService);
-            request.AddJsonBody(bookingRequest);
-
-            return request;
-        }
-
-        public RestRequest PostBookingRequest(BookingModel bookingRequest)
-        {
-            var request = new RestRequest(Endpoints.BookingEndpoint, Method.POST);
-            request.AddStandardHeaders();
-            request.AddJsonBody(bookingRequest);
-
-            return request;
-        }
-
-        public RestRequest GetBookingByFirstAndLastNameRequest(string firstName, string lastName)
-        {
-            var request = new RestRequest(Endpoints.BookingEndpoint, Method.GET);
-            request.AddQueryParameter(Endpoints.GetBookingByFirstNameSegment, firstName);
-            request.AddQueryParameter(Endpoints.GetBookingByLastNameSegment, lastName);
-            request.AddStandardHeaders();
-
-            return request;
-        }
-
-        public RestRequest GetBookingByCheckinAndCheckoutRequest(string checkin, string checkout)
-        {
-            var request = new RestRequest(Endpoints.BookingEndpoint, Method.GET);
-            request.AddQueryParameter(Endpoints.GetBookingByCheckinSegment, checkin);
-            request.AddQueryParameter(Endpoints.GetBookingByCheckoutSegment, checkout);
-            request.AddStandardHeaders();
-
-            return request;
-        }
-
-        public RestRequest GetBookingByQueryParameterRequest(string urlSegment, string query)
-        {
-            var request = new RestRequest(Endpoints.BookingEndpoint, Method.GET);
-            request.AddQueryParameter(urlSegment, query);
-            request.AddStandardHeaders();
-
-            return request;
+            var request = _requestFactory.CreateGetBookingByQueryParameterRequest(parameterName, parameterValue);
+            return await _apiClient.GetFilteredBookingIdsAsync(request);
         }
     }
 }
