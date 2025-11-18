@@ -10,7 +10,7 @@ namespace RestfulBooker.ApiTests
 {
     public abstract class BookingTestBase
     {
-        protected readonly RestClient _client = new RestClient(ApiTestBase.RestfulBokerUrl);
+        protected readonly RestClient _client = new RestClient(ApiTestBase.RestfulBookerUrl);
 
         public async Task<BookingResponse> CreateBooking(string firstName, string lastName, int totalPrice, bool depositPaid, string checkIn, string checkOut, string additionalNeeds)
         {
@@ -26,7 +26,7 @@ namespace RestfulBooker.ApiTests
                 LastName = lastName,
                 TotalPrice = totalPrice,
                 DepositPaid = depositPaid,
-                BookinDates = bookingDates,
+                BookingDates = bookingDates,
                 AdditionalNeeds = additionalNeeds
             };
 
