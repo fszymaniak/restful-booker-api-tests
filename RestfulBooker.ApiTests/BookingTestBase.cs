@@ -50,7 +50,7 @@ namespace RestfulBooker.ApiTests
             };
 
             var request = _requestFactory.CreatePostBookingRequest(bookingRequest);
-            return await _apiClient.CreateBookingAsync(request);
+            return await _apiClient.CreateBookingAsync(request).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace RestfulBooker.ApiTests
         public async Task<BookingModel> GetBookingById(int bookingId)
         {
             var request = _requestFactory.CreateBookingByIdRequest(bookingId, Method.GET);
-            return await _apiClient.GetBookingAsync(request);
+            return await _apiClient.GetBookingAsync(request).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace RestfulBooker.ApiTests
         public async Task<BookingModel> UpdateBookingById(BookingModel bookingRequest, int bookingId, Method method)
         {
             var request = _requestFactory.CreateUpdateBookingRequest(bookingRequest, bookingId, method);
-            return await _apiClient.UpdateBookingAsync(request);
+            return await _apiClient.UpdateBookingAsync(request).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace RestfulBooker.ApiTests
         public async Task DeleteBookingById(int bookingId)
         {
             var request = _requestFactory.CreateBookingByIdRequest(bookingId, Method.DELETE);
-            await _apiClient.DeleteBookingAsync(request);
+            await _apiClient.DeleteBookingAsync(request).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace RestfulBooker.ApiTests
         public async Task<IEnumerable<BookingResponse>> GetBookingIds()
         {
             var request = _requestFactory.CreateGetBookingIdsRequest();
-            return await _apiClient.GetBookingIdsAsync(request);
+            return await _apiClient.GetBookingIdsAsync(request).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace RestfulBooker.ApiTests
         public async Task<IEnumerable<BookingIdsResponse>> GetBookingIdsByFirstAndLastName(string firstName, string lastName)
         {
             var request = _requestFactory.CreateGetBookingByNameRequest(firstName, lastName);
-            return await _apiClient.GetFilteredBookingIdsAsync(request);
+            return await _apiClient.GetFilteredBookingIdsAsync(request).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -104,7 +104,7 @@ namespace RestfulBooker.ApiTests
         public async Task<IEnumerable<BookingIdsResponse>> GetBookingIdsByCheckinAndCheckout(string checkin, string checkout)
         {
             var request = _requestFactory.CreateGetBookingByDatesRequest(checkin, checkout);
-            return await _apiClient.GetFilteredBookingIdsAsync(request);
+            return await _apiClient.GetFilteredBookingIdsAsync(request).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -113,7 +113,7 @@ namespace RestfulBooker.ApiTests
         public async Task<IEnumerable<BookingIdsResponse>> GetBookingIdsByQueryParameter(string parameterName, string parameterValue)
         {
             var request = _requestFactory.CreateGetBookingByQueryParameterRequest(parameterName, parameterValue);
-            return await _apiClient.GetFilteredBookingIdsAsync(request);
+            return await _apiClient.GetFilteredBookingIdsAsync(request).ConfigureAwait(false);
         }
     }
 }

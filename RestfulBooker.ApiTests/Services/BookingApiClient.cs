@@ -29,7 +29,7 @@ namespace RestfulBooker.ApiTests.Services
         public async Task<BookingResponse> CreateBookingAsync(RestRequest request)
         {
             _logger.LogDebug("Creating new booking");
-            var response = await ExecuteWithLoggingAsync<BookingResponse>(request, "CreateBooking");
+            var response = await ExecuteWithLoggingAsync<BookingResponse>(request, "CreateBooking").ConfigureAwait(false);
             return JsonHelper.Deserialize<BookingResponse>(response.Content);
         }
 
@@ -39,7 +39,7 @@ namespace RestfulBooker.ApiTests.Services
         public async Task<BookingModel> GetBookingAsync(RestRequest request)
         {
             _logger.LogDebug("Getting booking");
-            var response = await ExecuteWithLoggingAsync<BookingModel>(request, "GetBooking");
+            var response = await ExecuteWithLoggingAsync<BookingModel>(request, "GetBooking").ConfigureAwait(false);
             return JsonHelper.Deserialize<BookingModel>(response.Content);
         }
 
@@ -49,7 +49,7 @@ namespace RestfulBooker.ApiTests.Services
         public async Task<BookingModel> UpdateBookingAsync(RestRequest request)
         {
             _logger.LogDebug("Updating booking");
-            var response = await ExecuteWithLoggingAsync<BookingModel>(request, "UpdateBooking");
+            var response = await ExecuteWithLoggingAsync<BookingModel>(request, "UpdateBooking").ConfigureAwait(false);
             return JsonHelper.Deserialize<BookingModel>(response.Content);
         }
 
@@ -59,7 +59,7 @@ namespace RestfulBooker.ApiTests.Services
         public async Task DeleteBookingAsync(RestRequest request)
         {
             _logger.LogDebug("Deleting booking");
-            await ExecuteWithLoggingAsync(request, "DeleteBooking");
+            await ExecuteWithLoggingAsync(request, "DeleteBooking").ConfigureAwait(false);
         }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace RestfulBooker.ApiTests.Services
         public async Task<IEnumerable<BookingResponse>> GetBookingIdsAsync(RestRequest request)
         {
             _logger.LogDebug("Getting all booking IDs");
-            var response = await ExecuteWithLoggingAsync<IEnumerable<BookingResponse>>(request, "GetBookingIds");
+            var response = await ExecuteWithLoggingAsync<IEnumerable<BookingResponse>>(request, "GetBookingIds").ConfigureAwait(false);
             return JsonHelper.Deserialize<IEnumerable<BookingResponse>>(response.Content);
         }
 
@@ -78,7 +78,7 @@ namespace RestfulBooker.ApiTests.Services
         public async Task<IEnumerable<BookingIdsResponse>> GetFilteredBookingIdsAsync(RestRequest request)
         {
             _logger.LogDebug("Getting filtered booking IDs");
-            var response = await ExecuteWithLoggingAsync<IEnumerable<BookingIdsResponse>>(request, "GetFilteredBookingIds");
+            var response = await ExecuteWithLoggingAsync<IEnumerable<BookingIdsResponse>>(request, "GetFilteredBookingIds").ConfigureAwait(false);
             return JsonHelper.Deserialize<IEnumerable<BookingIdsResponse>>(response.Content);
         }
 
@@ -86,7 +86,7 @@ namespace RestfulBooker.ApiTests.Services
         {
             try
             {
-                var response = await _client.ExecuteAsync<T>(request);
+                var response = await _client.ExecuteAsync<T>(request).ConfigureAwait(false);
                 LogResponse(response, operationName);
                 return response;
             }
@@ -101,7 +101,7 @@ namespace RestfulBooker.ApiTests.Services
         {
             try
             {
-                var response = await _client.ExecuteAsync(request);
+                var response = await _client.ExecuteAsync(request).ConfigureAwait(false);
                 LogResponse(response, operationName);
                 return response;
             }
