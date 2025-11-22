@@ -95,14 +95,14 @@ jobs:
 
     - name: Upload test results
       if: always()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v5
       with:
         name: test-results
         path: ./coverage/**/*.trx
 
     - name: Upload coverage report
       if: always()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v5
       with:
         name: coverage-report
         path: ./coverage/report/
@@ -172,7 +172,7 @@ jobs:
 
     - name: Upload regression test results
       if: always()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v5
       with:
         name: regression-test-results
         path: ./RestfulBooker.ApiTests/TestResults/**/*.trx
@@ -220,7 +220,7 @@ jobs:
 
     - name: Upload integration test results
       if: always()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v5
       with:
         name: integration-test-results
         path: ./RestfulBooker.ApiTests/TestResults/**/*.trx
