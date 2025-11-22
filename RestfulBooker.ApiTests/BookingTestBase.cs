@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using RestfulBooker.ApiTests.Models.Responses;
 using RestfulBooker.ApiTests.Services;
 using RestfulBooker.ApiTests.Factories;
+using RestfulBooker.ApiTests.Constants;
+using RestfulBooker.ApiTests.Helpers;
 
 namespace RestfulBooker.ApiTests
 {
@@ -18,6 +20,7 @@ namespace RestfulBooker.ApiTests
         protected readonly BookingApiClient _apiClient;
         protected readonly BookingRequestFactory _requestFactory;
         protected readonly ITestLogger _logger;
+        protected readonly RestClient _client;
 
         protected BookingTestBase()
         {
@@ -26,6 +29,7 @@ namespace RestfulBooker.ApiTests
             _authService = new AuthenticationService(_config.RestfulBookerUrl);
             _apiClient = new BookingApiClient(_config.RestfulBookerUrl, _logger);
             _requestFactory = new BookingRequestFactory(_authService);
+            _client = new RestClient(_config.RestfulBookerUrl);
         }
 
         /// <summary>
@@ -114,6 +118,42 @@ namespace RestfulBooker.ApiTests
         {
             var request = _requestFactory.CreateGetBookingByQueryParameterRequest(parameterName, parameterValue);
             return await _apiClient.GetFilteredBookingIdsAsync(request).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Creates a RestRequest for retrieving or deleting a booking by ID.
+        /// </summary>
+        protected RestRequest BookingByIdRequest(int bookingId, Method method)
+        {
+            var request = new RestRequest(Endpoints.GetBookingByIdEndpoint, method);
+            request.AddUrlSegment(Endpoints.GetBookingByIdSegment, bookingId);
+            request.AddStandardHeaders();
+            request.AddAuthorizationHeader(_authService);
+            return request;
+        }
+
+        /// <summary>
+        /// Creates a RestRequest for updating a booking.
+        /// </summary>
+        protected RestRequest UpdateBookingByIdRequest(BookingModel bookingModel, int bookingId, Method method)
+        {
+            var request = new RestRequest(Endpoints.GetBookingByIdEndpoint, method);
+            request.AddUrlSegment(Endpoints.GetBookingByIdSegment, bookingId);
+            request.AddStandardHeaders();
+            request.AddAuthorizationHeader(_authService);
+            request.AddJsonBody(bookingModel);
+            return request;
+        }
+
+        /// <summary>
+        /// Creates a RestRequest for creating a new booking.
+        /// </summary>
+        protected RestRequest PostBookingRequest(BookingModel bookingModel)
+        {
+            var request = new RestRequest(Endpoints.BookingEndpoint, Method.POST);
+            request.AddStandardHeaders();
+            request.AddJsonBody(bookingModel);
+            return request;
         }
     }
 }

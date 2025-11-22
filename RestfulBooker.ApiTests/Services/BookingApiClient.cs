@@ -82,7 +82,7 @@ namespace RestfulBooker.ApiTests.Services
             return JsonHelper.Deserialize<IEnumerable<BookingIdsResponse>>(response.Content);
         }
 
-        private async Task<IRestResponse<T>> ExecuteWithLoggingAsync<T>(RestRequest request, string operationName)
+        private async Task<RestResponse<T>> ExecuteWithLoggingAsync<T>(RestRequest request, string operationName)
         {
             try
             {
@@ -97,7 +97,7 @@ namespace RestfulBooker.ApiTests.Services
             }
         }
 
-        private async Task<IRestResponse> ExecuteWithLoggingAsync(RestRequest request, string operationName)
+        private async Task<RestResponse> ExecuteWithLoggingAsync(RestRequest request, string operationName)
         {
             try
             {
@@ -112,7 +112,7 @@ namespace RestfulBooker.ApiTests.Services
             }
         }
 
-        private void LogResponse(IRestResponse response, string operationName)
+        private void LogResponse(RestResponse response, string operationName)
         {
             if (response.IsSuccessful)
             {
